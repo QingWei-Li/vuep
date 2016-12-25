@@ -1,6 +1,6 @@
 {
   "name": "vuep",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A component for rendering Vue components with live editor and preview.",
   "main": "dist/vuep.common.js",
   "unpkg": "dist/vuep.js",
