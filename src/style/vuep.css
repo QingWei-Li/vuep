@@ -9,6 +9,7 @@
 .vuep-editor, .vuep-preview, .vuep-error {
   width: 50%;
   border-radius: 2px;
+  overflow: hidden;
 }
 
 .vuep-editor {

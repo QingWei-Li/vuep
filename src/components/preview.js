@@ -6,7 +6,7 @@ export default {
   props: ['value'],
 
   render (h) {
-    return h('div', { class: 'preview' })
+    return h('div')
   },
 
   mounted () {
