@@ -1,0 +1,47 @@
+{
+  "name": "vue-playground",
+  "version": "0.0.0",
+  "description": "A component for rendering Vue components with live editor and preview.",
+  "main": "lib/vue-playground.js",
+  "scripts": {
+    "test": "eslint src",
+    "build": "rollup -c && uglifyjs dist/vue-playground.js -o dist/vue-playground.min.js",
+    "dev": "rollup -cw && uglifyjs dist/vue-playground.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QingWei-Li/vue-playground.git"
+  },
+  "keywords": [
+    "vue",
+    "playground",
+    "preview",
+    "editable",
+    "component",
+    "vuejs"
+  ],
+  "author": "qingwei-li <cinwell.li@gmail.com> (https://github.com/QingWei-Li)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/QingWei-Li/vue-playground/issues"
+  },
+  "homepage": "https://github.com/QingWei-Li/vue-playground#readme",
+  "devDependencies": {
+    "eslint": "^3.12.2",
+    "eslint-config-vue": "^2.0.1",
+    "eslint-plugin-vue": "^1.0.0",
+    "rollup": "^0.38.0",
+    "rollup-plugin-buble": "^0.15.0",
+    "rollup-plugin-commonjs": "^6.0.1",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-watch": "^2.5.0",
+    "uglify-js": "^2.7.5",
+    "vue": "^2.1.7"
+  },
+  "peerDependencies": {
+    "codemirror": "^5.22.0"
+  },
+  "dependencies": {
+    "codemirror": "^5.22.0"
+  }
+}
