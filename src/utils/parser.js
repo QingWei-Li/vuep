@@ -3,12 +3,25 @@ export default function (input) {
 
   html.innerHTML = input
 
+  const content = html.innerHTML
+
   try {
+    const template = html.querySelector('template')
+    const script = html.querySelector('script')
+    const styles = Array.prototype.slice.call(html.querySelectorAll('style')).map(n => n.innerHTML)
+
+    if (!template && !script && !styles.length) {
+      return {
+        content,
+        script: content
+      }
+    }
+
     return {
-      template: html.querySelector('template').innerHTML,
-      script: html.querySelector('script').innerHTML,
-      styles: Array.prototype.slice.call(html.querySelectorAll('style')).map(n => n.innerHTML),
-      content: html.innerHTML
+      content,
+      template: template ? template.innerHTML : '',
+      script: script ? script.innerHTML : '',
+      styles: styles
     }
   } catch (e) {
     return { error: e }

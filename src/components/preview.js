@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from 'vue/dist/vue.common'
 
 export default {
   name: 'preview',
@@ -22,7 +22,11 @@ export default {
 
       this.codeEl = document.createElement('div')
       this.$el.appendChild(this.codeEl)
-      this.codeVM = new Vue(val).$mount(this.codeEl)
+      try {
+        this.codeVM = new Vue(val).$mount(this.codeEl)
+      } catch (e) {
+        this.$emit('error', e)
+      }
     }
   }
 }

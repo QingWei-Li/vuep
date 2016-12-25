@@ -1,0 +1,38 @@
+@import "codemirror/lib/codemirror.css";
+@import "codemirror/theme/material.css";
+
+.vuep {
+  display: flex;
+  font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.vuep-editor, .vuep-preview, .vuep-error {
+  width: 50%;
+  border-radius: 2px;
+}
+
+.vuep-editor {
+  line-height: 1.2em;
+}
+
+.vuep-error {
+  color: #f66;
+}
+
+.vuep-preview, .vuep-error {
+  margin-left: 10px;
+  border: 1px solid #eee;
+  padding: 25px 35px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .vuep {
+    display: block;
+  }
+
+  .vuep-editor, .vuep-preview, .vuep-error {
+    width: 100%;
+    margin: 0 0 15px 0;
+  }
+}

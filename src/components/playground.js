@@ -4,13 +4,14 @@ import parser from '../utils/parser'
 import compiler from '../utils/compiler'
 
 export default {
-  name: 'VuePlayground',
+  name: 'Vuep',
 
   props: {
     template: {
       type: String,
       required: true
-    }
+    },
+    options: {}
   },
 
   data () {
@@ -22,29 +23,44 @@ export default {
   },
 
   render (h) {
-    return h('div', {}, [
-      h(Editor, {
+    let win
+
+    if (this.error) {
+      win = h('div', {
+        class: 'vuep-error'
+      }, [this.error])
+    } else {
+      win = h(Preview, {
+        class: 'vuep-preview',
         props: {
-          value: this.content
+          value: this.preview
+        },
+        on: {
+          error: this.handleError
+        }
+      })
+    }
+
+    return h('div', { class: 'vuep' }, [
+      h(Editor, {
+        class: 'vuep-editor',
+        props: {
+          value: this.content,
+          options: this.options
         },
         on: {
           change: this.executeCode
         }
       }),
-      h(Preview, {
-        props: {
-          value: this.preview
-        }
-      }),
-      h('div', null, [this.error])
+      win
     ])
   },
 
   created () {
+    if (this.$isServer) return
     let content = this.template
 
     if (/^[\.#]/.test(this.template)) {
-      if (this.$isServer) return
       const html = document.querySelector(this.template)
       if (!html) throw Error(`${this.template} is not found`)
 
@@ -55,6 +71,10 @@ export default {
   },
 
   methods: {
+    handleError (e) {
+      this.error = e
+    },
+
     executeCode (code) {
       this.error = ''
       const result = parser(code)

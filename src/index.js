@@ -1,13 +1,18 @@
-import Playground from './components/playground'
+import Vuep from './components/playground'
 
-function install (Vue) {
-  Vue.component(Playground.name, Playground)
+Vuep.config = function (opts) {
+  Vuep.props.options.default = () => opts
 }
 
-Playground.install = install
+function install (Vue, opts) {
+  Vuep.config(opts)
+  Vue.component(Vuep.name, Vuep)
+}
+
+Vuep.install = install
 
 if (typeof Vue !== 'undefined') {
   Vue.use(install) // eslint-disable-line
 }
 
-export default Playground
+export default Vuep

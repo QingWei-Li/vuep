@@ -2,35 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="../node_modules/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="../dist/vuep.css">
 </head>
 <body>
   <div id="app">
-    <p>2333</p>
-
-    <vue-playground template="#example"></vue-playground>
+    <vuep template="#example"></vuep>
+    <!-- <vuep template="#example2" :options="{ mode: 'javascript' }"></vuep> -->
   </div>
 
-  <script type="text/x-template" id="example">
-    <template>
-      <div>Hello, {{ name }}!</div>
-    </template>
+<script type="text/x-template" id="example">
+<template>
+  <div>Hello, {{ name }}!</div>
+</template>
 
-    <script>
-      export default {
-        data() {
-          return { name: 'Vue' }
-        }
-      }
-    </script>
-  </script>
+<script>
+  export default {
+    data() {
+      return { name: 'Vue' }
+    }
+  }
+</script>
+</script>
+
+<script type="text/x-template" id="example2">
+  export default {
+    data() {
+      return { name: 'Vue' }
+    },
+
+    template: `<div>6666 {{ name }}</div>`
+  }
+</script>
+
 </body>
 <!-- <script src="https://unpkg.com/babel-standalone/babel.min.js"></script> -->
 <script src="../node_modules/codemirror/lib/codemirror.js"></script>
+<script src="../node_modules/codemirror/addon/mode/overlay.js"></script>
 <script src="../node_modules/codemirror/mode/xml/xml.js"></script>
 <script src="../node_modules/codemirror/mode/javascript/javascript.js"></script>
+<script src="../node_modules/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="../node_modules/codemirror/mode/vue/vue.js"></script>
 <script src="../node_modules/vue/dist/vue.js"></script>
-<script src="../dist/vue-playground.js"></script>
+<script src="../dist/vuep.js"></script>
 
 <script>
   new Vue({ // eslint-disable-line

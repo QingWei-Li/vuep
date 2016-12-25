@@ -1,22 +1,49 @@
-# vue-playground
+# Vuep (vue playground)
 
-> A component for rendering Vue components with live editor and preview.
+> 🎡 A component for rendering Vue components with live editor and preview.
+
+**Need the full (compiler-included) CommonJS build of Vue**
+
+
+![image](https://cloud.githubusercontent.com/assets/7565692/21471084/f391823e-cade-11e6-9de5-df9455bc50cb.png)
+
 
 ## Installation
 
+### Yarn
 ```bash
-yarn add vue-playground
-# npm i vue-playground -S
+yarn add vuep codemirror
+# npm i vuep codemirror -S
+```
+
+### HTML tag
+
+```html
+<!-- Import theme -->
+<link rel="stylesheet" href="//unpkg.com/vuep.css">
+
+<!-- depend vue -->
+<script src="//unpkg.com/vue"></script>
+<script src="//unpkg.com/vuep"></script>
 ```
 
 ## Quick start
 
+webpack config
+```javascript
+{
+  alias: {
+    'vue$': 'vue/dist/vue.common'
+  }
+}
+```
+
 ```javascript
 import Vue from 'vue'
-import VuePlayground from 'vue-playground'
+import Vuep from 'vuep'
 
-Vue.use(Playground)
-// or Vue.component('VuePlayground', Playground)
+Vue.use(Vuep {, /* codemirror options */ })
+// or Vue.component('Vuep', Vuep)
 
 new Vue({
   el: '#app',
@@ -43,7 +70,7 @@ new Vue({
 ### Usage A
 ```html
 <div id="app">
-  <vue-playground :template="code"></vue-playground>
+  <vuep :template="code"></vuep>
 </div>
 ```
 
@@ -52,7 +79,7 @@ you can written in HTML file or even the Markdown file.
 
 ```html
 <div id="app">
-  <vue-playground template="#example"></vue-playground>
+  <vuep template="#example"></vuep>
 </div>
 
 <script type="text/x-template" id="example">
@@ -74,5 +101,30 @@ you can written in HTML file or even the Markdown file.
 - https://facebook.github.io/react/
 - https://github.com/FormidableLabs/component-playground
 
+
+## Roadmap
+
+- More usages
+- Unit test
+- Supports style tag
+
+
+## Contributing
+
+- Fork it!
+- Create your feature branch: `git checkout -b my-new-feature`
+- Commit your changes: `git commit -am 'Add some feature'`
+- Push to the branch: `git push origin my-new-feature`
+- Submit a pull request :D
+
+
+## Development
+
+```shell
+npm i && npm run dev
+open test/test.html
+```
+
 ## LICENSE
 MIT
+

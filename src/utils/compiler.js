@@ -6,7 +6,7 @@ export default function ({ template, script, styles }) {
   script = script.trim()
 
   // Not exist template or render function
-  if (!/template:|render:|render\(/.test(script)) {
+  if (!/template:|render:|render\(/.test(script) && template) {
     script = script.replace(/}.*?$/, `, template: \`${template.trim()}\`}`)
   }
 
