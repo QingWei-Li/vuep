@@ -27,7 +27,7 @@
   "bugs": {
     "url": "https://github.com/QingWei-Li/vuep/issues"
   },
-  "homepage": "https://github.com/QingWei-Li/vuep#readme",
+  "homepage": "https://qingwei-li.github.io/vuep/",
   "devDependencies": {
     "cssnano": "^3.9.1",
     "eslint": "^3.12.2",

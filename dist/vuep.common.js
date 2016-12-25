@@ -1,25 +1,40 @@
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('codemirror'), require('vue')) :
-  typeof define === 'function' && define.amd ? define(['codemirror', 'vue'], factory) :
-  (global.VuePlayground = factory(global.CodeMirror,global.Vue));
-}(this, (function (CodeMirror,Vue$1) { 'use strict';
+'use strict';
 
-CodeMirror = 'default' in CodeMirror ? CodeMirror['default'] : CodeMirror;
-Vue$1 = 'default' in Vue$1 ? Vue$1['default'] : Vue$1;
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var CodeMirror = _interopDefault(require('codemirror'));
+var Vue$1 = _interopDefault(require('vue/dist/vue.common'));
+
+if (typeof require !== 'undefined') {
+  require('codemirror/addon/mode/overlay');
+  require('codemirror/addon/mode/simple');
+  require('codemirror/mode/css/css');
+  require('codemirror/mode/htmlmixed/htmlmixed');
+  require('codemirror/mode/javascript/javascript');
+  require('codemirror/mode/vue/vue');
+  require('codemirror/mode/xml/xml');
+}
+
+var DEFAULT_OPTIONS = {
+  lineNumbers: true,
+  mode: 'text/x-vue',
+  theme: 'material',
+  tabSize: 2
+};
 
 var Editor = {
   name: 'VueCodeMirror',
 
-  props: ['value'],
+  props: ['value', 'options'],
 
   render: function render (h) {
-    return h('textarea', null, this.value)
+    return h('div', null, [
+      h('textarea', { ref: 'textarea' }, this.value)
+    ])
   },
 
   mounted: function mounted () {
-    this.editor = CodeMirror.fromTextArea(this.$el, {
-    });
-
+    this.editor = CodeMirror.fromTextArea(this.$refs.textarea, Object.assign(DEFAULT_OPTIONS, this.options));
     this.editor.on('change', this.handleChange);
   },
 
@@ -52,7 +67,11 @@ var Preview = {
 
       this.codeEl = document.createElement('div');
       this.$el.appendChild(this.codeEl);
-      this.codeVM = new Vue$1(val).$mount(this.codeEl);
+      try {
+        this.codeVM = new Vue$1(val).$mount(this.codeEl);
+      } catch (e) {
+        this.$emit('error', e);
+      }
     }
   }
 };
@@ -62,12 +81,25 @@ var parser = function (input) {
 
   html.innerHTML = input;
 
+  var content = html.innerHTML;
+
   try {
+    var template = html.querySelector('template');
+    var script = html.querySelector('script');
+    var styles = Array.prototype.slice.call(html.querySelectorAll('style')).map(function (n) { return n.innerHTML; });
+
+    if (!template && !script && !styles.length) {
+      return {
+        content: content,
+        script: content
+      }
+    }
+
     return {
-      template: html.querySelector('template').innerHTML,
-      script: html.querySelector('script').innerHTML,
-      styles: Array.prototype.slice.call(html.querySelectorAll('style')).map(function (n) { return n.innerHTML; }),
-      content: html.innerHTML
+      content: content,
+      template: template ? template.innerHTML : '',
+      script: script ? script.innerHTML : '',
+      styles: styles
     }
   } catch (e) {
     return { error: e }
@@ -86,7 +118,7 @@ var compiler = function (ref) {
   script = script.trim();
 
   // Not exist template or render function
-  if (!/template:|render:|render\(/.test(script)) {
+  if (!/template:|render:|render\(/.test(script) && template) {
     script = script.replace(/}.*?$/, (", template: `" + (template.trim()) + "`}"));
   }
 
@@ -106,14 +138,15 @@ var compiler = function (ref) {
   }
 };
 
-var Playground$1 = {
-  name: 'VuePlayground',
+var Vuep$1 = {
+  name: 'Vuep',
 
   props: {
     template: {
       type: String,
       required: true
-    }
+    },
+    options: {}
   },
 
   data: function data () {
@@ -125,29 +158,44 @@ var Playground$1 = {
   },
 
   render: function render (h) {
-    return h('div', {}, [
-      h(Editor, {
+    var win;
+
+    if (this.error) {
+      win = h('div', {
+        class: 'vuep-error'
+      }, [this.error]);
+    } else {
+      win = h(Preview, {
+        class: 'vuep-preview',
         props: {
-          value: this.content
+          value: this.preview
+        },
+        on: {
+          error: this.handleError
+        }
+      });
+    }
+
+    return h('div', { class: 'vuep' }, [
+      h(Editor, {
+        class: 'vuep-editor',
+        props: {
+          value: this.content,
+          options: this.options
         },
         on: {
           change: this.executeCode
         }
       }),
-      h(Preview, {
-        props: {
-          value: this.preview
-        }
-      }),
-      h('div', null, [this.error])
+      win
     ])
   },
 
   created: function created () {
+    if (this.$isServer) { return }
     var content = this.template;
 
     if (/^[\.#]/.test(this.template)) {
-      if (this.$isServer) { return }
       var html = document.querySelector(this.template);
       if (!html) { throw Error(((this.template) + " is not found")) }
 
@@ -158,6 +206,10 @@ var Playground$1 = {
   },
 
   methods: {
+    handleError: function handleError (e) {
+      this.error = e;
+    },
+
     executeCode: function executeCode (code) {
       this.error = '';
       var result = parser(code);
@@ -180,16 +232,19 @@ var Playground$1 = {
   }
 };
 
-function install (Vue) {
-  Vue.component(Playground$1.name, Playground$1);
+Vuep$1.config = function (opts) {
+  Vuep$1.props.options.default = function () { return opts; };
+};
+
+function install (Vue, opts) {
+  Vuep$1.config(opts);
+  Vue.component(Vuep$1.name, Vuep$1);
 }
 
-Playground$1.install = install;
+Vuep$1.install = install;
 
 if (typeof Vue !== 'undefined') {
   Vue.use(install); // eslint-disable-line
 }
 
-return Playground$1;
-
-})));
+module.exports = Vuep$1;

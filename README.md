@@ -2,11 +2,14 @@
 
 > 🎡 A component for rendering Vue components with live editor and preview.
 
+
 **Need the full (compiler-included) CommonJS build of Vue**
 
 
 ![image](https://cloud.githubusercontent.com/assets/7565692/21471084/f391823e-cade-11e6-9de5-df9455bc50cb.png)
 
+## Try it!
+https://qingwei-li.github.io/vuep/
 
 ## Installation
 
