@@ -2,42 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="../dist/vuep.css">
+  <link rel="stylesheet" href="../node_modules/codemirror/addon/hint/show-hint.css">
 </head>
 <body>
   <div id="app">
+    <vuep template="#example2" :options="{ mode: 'javascript' }"></vuep>
     <vuep template="#example"></vuep>
-    <!-- <vuep template="#example2" :options="{ mode: 'javascript' }"></vuep> -->
   </div>
 
 <script type="text/x-template" id="example">
+<style>
+  .main {
+    color: #2c3e50;
+  }
+  .text {
+    color: #4fc08d;
+  }
+</style>
+
 <template>
-  <div>Hello, {{ name }}!</div>
+  <div class="main">
+    <h2> Hello <span class="text">{{ name }}</span>!</h2>
+    <h2>Features</h2>
+    <ul>
+      <li v-for="text in features">{{ text }}</li>
+    </ul>
+  </div>
 </template>
 
 <script>
   export default {
-    data() {
-      return { name: 'Vue' }
+    data () {
+      return {
+        name: 'Vuep',
+        features: [
+          'Vue component spec',
+          'Scoped style',
+          'UMD and CommonJS build'
+        ]
+      }
     }
   }
 </script>
 </script>
 
 <script type="text/x-template" id="example2">
-  export default {
-    data() {
-      return { name: 'Vue' }
-    },
-
-    template: `<div>6666 {{ name }}</div>`
+export default {
+  template: '<div>123</div>',
+  data () {
+    return {
+      name: 'Vuep',
+      features: [
+        'Vue component spec',
+        'Scoped style',
+        'UMD and CommonJS build'
+      ]
+    }
   }
+}
 </script>
+
+
+
 
 </body>
 <!-- <script src="https://unpkg.com/babel-standalone/babel.min.js"></script> -->
 <script src="../node_modules/codemirror/lib/codemirror.js"></script>
 <script src="../node_modules/codemirror/addon/mode/overlay.js"></script>
+<script src="../node_modules/codemirror/mode/css/css.js"></script>
 <script src="../node_modules/codemirror/mode/xml/xml.js"></script>
 <script src="../node_modules/codemirror/mode/javascript/javascript.js"></script>
 <script src="../node_modules/codemirror/mode/htmlmixed/htmlmixed.js"></script>

@@ -4,16 +4,22 @@
 .vuep {
   display: flex;
   font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+  height: 400px;
 }
 
 .vuep-editor, .vuep-preview, .vuep-error {
-  margin-right: 10px;
-  width: 50%;
   border-radius: 2px;
+  height: inherit;
+  margin-right: 10px;
   overflow: hidden;
+  width: 50%;
 
   &:last-child {
     margin-right: 0;
+  }
+
+  .CodeMirror {
+    height: inherit;
   }
 }
 
@@ -27,8 +33,8 @@
 
 .vuep-preview, .vuep-error {
   border: 1px solid #eee;
-  padding: 25px 35px;
   box-sizing: border-box;
+  padding: 25px 35px;
 }
 
 @media (max-width: 600px) {
@@ -37,7 +43,7 @@
   }
 
   .vuep-editor, .vuep-preview, .vuep-error {
-    width: 100%;
     margin: 0 0 15px 0;
+    width: 100%;
   }
 }

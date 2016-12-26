@@ -1,5 +1,5 @@
 
-# Vuep <small>0.1.0</small>
+# Vuep <small>0.2.0</small>
 
 > A component for rendering Vue components with live editor and preview.
 

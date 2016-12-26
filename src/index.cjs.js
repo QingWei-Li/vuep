@@ -1,4 +1,5 @@
-export * from './'
+import Vuep from './'
+
 if (typeof require !== 'undefined') {
   require('codemirror/addon/mode/overlay')
   require('codemirror/addon/mode/simple')
@@ -8,3 +9,5 @@ if (typeof require !== 'undefined') {
   require('codemirror/mode/vue/vue')
   require('codemirror/mode/xml/xml')
 }
+
+export default Vuep

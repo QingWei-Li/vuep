@@ -2,10 +2,7 @@
 
 > 🎡 A component for rendering Vue components with live editor and preview.
 
-
-
-
-![image](https://cloud.githubusercontent.com/assets/7565692/21471084/f391823e-cade-11e6-9de5-df9455bc50cb.png)
+![image](https://cloud.githubusercontent.com/assets/7565692/21482443/093e4970-cbaf-11e6-89f0-eae73fc49741.png)
 
 ## Try it!
 https://qingwei-li.github.io/vuep/
@@ -45,8 +42,9 @@ webpack config
 ```javascript
 import Vue from 'vue'
 import Vuep from 'vuep'
+import 'vuep/dist/vuep.css'
 
-Vue.use(Vuep {, /* codemirror options */ })
+Vue.use(Vuep /*{, codemirror options */ })
 // or Vue.component('Vuep', Vuep)
 
 new Vue({
@@ -108,9 +106,7 @@ you can written in HTML file or even the Markdown file.
 
 ## Roadmap
 
-- More usages
 - Unit test
-- Supports style tag
 
 
 ## Contributing

@@ -19,7 +19,7 @@ export default {
   },
 
   mounted () {
-    this.editor = CodeMirror.fromTextArea(this.$refs.textarea, Object.assign(DEFAULT_OPTIONS, this.options))
+    this.editor = CodeMirror.fromTextArea(this.$refs.textarea, Object.assign({}, DEFAULT_OPTIONS, this.options))
     this.editor.on('change', this.handleChange)
   },
 

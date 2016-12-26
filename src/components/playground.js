@@ -95,7 +95,7 @@ export default {
 
       this.content = result.content
       this.preview = compiledCode.result
-      this.styles = compiledCode.styles
+      if (compiledCode.styles) this.styles = compiledCode.styles
     }
   }
 }

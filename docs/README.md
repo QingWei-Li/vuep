@@ -2,14 +2,36 @@
 <vuep template="#demo1"></vuep>
 
 <script type="text/x-template" id="demo1">
+<style>
+  .main {
+    color: #2c3e50;
+  }
+  .text {
+    color: #4fc08d;
+  }
+</style>
+
 <template>
-  <div>Hello, {{ name }}!</div>
+  <div class="main">
+    <h2> Hello <span class="text">{{ name }}</span>!</h2>
+    <h2>Features</h2>
+    <ul>
+      <li v-for="text in features">{{ text }}</li>
+    </ul>
+  </div>
 </template>
 
 <script>
   export default {
-    data() {
-      return { name: 'Vue' }
+    data () {
+      return {
+        name: 'Vuep',
+        features: [
+          'Vue component spec',
+          'Scoped style',
+          'UMD and CommonJS build'
+        ]
+      }
     }
   }
 </script>
@@ -34,8 +56,9 @@ webpack config
 ```javascript
 import Vue from 'vue'
 import Vuep from 'vuep'
+import 'vuep/dist/vuep.css'
 
-Vue.use(Vuep {, /* codemirror options */ })
+Vue.use(Vuep /*{, codemirror options */ })
 // or Vue.component('Vuep', Vuep)
 
 new Vue({
@@ -83,29 +106,38 @@ template
 <vuep template="#example"></vuep>
 
 <script type="text/x-template" id="example">
-  <template>
-    <div>Hello, {{ name }}!</div>
-  </template>
+<template>
+  <div>Hello, {{ name }}!</div>
+</template>
 
-  <script>
-    export default {
-      data: function () {
-        return { name: 'Vue' }
-      }
+<script>
+  export default {
+    data: function () {
+      return { name: 'Vue' }
     }
-  </script>
+  }
+</script>
 </script>
 ```
+
+The default is supported in docsify. such as https://qingwei-li.github.io/vuep/README.md
 
 # Options
 
 https://codemirror.net/index.html
 
+## Global config
 ```javascript
-Vue.use(Vuep, { /* codemirror config */ })
+Vue.use(Vuep /*, { codemirror config */ })
 ```
 
-Default config
+## Props
+
+```html
+<vuep :options="{ theme: 'material' }"></vuep>
+```
+
+### Default config
 ```json
 {
   "lineNumbers": true,
@@ -113,4 +145,141 @@ Default config
   "theme": "material",
   "tabSize": 2
 }
+```
+
+### example
+
+```html
+<vuep :options="{ mode: 'javascript' }" template="#demo4"></vuep>
+
+<script type="text/x-template" id="demo4">
+  export default {
+    template: `<div>I'am {{ name }}</div>`,
+
+    data: function () {
+      return { name: 'cinwell' }
+    }
+  }
+</script>
+```
+
+<vuep :options="{ mode: 'javascript' }" template="#demo4"></vuep>
+
+<script type="text/x-template" id="demo4">
+  export default {
+    template: `<div>I'am {{ name }}</div>`,
+
+    data: function () {
+      return { name: 'cinwell' }
+    }
+  }
+</script>
+
+<br>
+
+# FAQ
+## How to change the default theme?
+
+First you need load CodeMirror theme style, You can view the list of theme from [here](https://codemirror.net/demo/theme.html).
+
+Such as in your HTML file
+```html
+<link rel="stylesheet" href="path/to/codemirror/theme/neo.css">
+```
+
+Or in your CSS file
+
+```css
+@import "codemirror/theme/neo.css"
+```
+
+Configure the options for the component
+
+```html
+<vuep :options="{ theme: 'neo' }"></vuep>
+```
+
+<vuep class="demo2" :options="{ theme: 'neo' }" template="#demo2"></vuep>
+
+<script type="text/x-template" id="demo2">
+<template>
+  <div>Hello, {{ name }}!</div>
+</template>
+
+<script>
+  export default {
+    data: function () {
+      return { name: 'Vue' }
+    }
+  }
+</script>
+</script>
+
+## Can I use ES6?
+
+I know you will worry that some browsers do not support ES6, but we have [babel-standalone](https://www.npmjs.com/package/babel-standalone).
+
+> babel-standalone is a standalone build of Babel for use in non-Node.js environments, including browsers.
+
+How to use:
+
+In your HTML file
+
+```html
+<script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
+```
+
+Done. Now you are free to use ES6, Vuep will compile them to ES5 through the babel.
+
+
+<vuep template="#demo3"></vuep>
+
+<script type="text/x-template" id="demo3">
+<template>
+  <div>
+    <button @click="count++">+</button>
+    <span>{{ count }}</span>
+    <button @click="count--">-</button>
+  </div>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        count: 0
+      }
+    }
+  }
+</script>
+</script>
+
+
+# Warning
+
+If you use `script(type="text/x-template)"`,The script tag must be at the end, for example
+
+```html
+<script type="text/x-template">
+  <style></style>
+  <template></template>
+  <script></script>
+</script>
+```
+
+These will be parsed incorrectly
+```html
+<script type="text/x-template">
+  <script></script>
+  <style></style>
+  <template></template>
+</script>
+```
+
+```html
+<script type="text/x-template">
+  <style></style>
+  <script></script>
+  <template></template>
+</script>
 ```

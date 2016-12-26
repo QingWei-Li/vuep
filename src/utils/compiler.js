@@ -20,7 +20,7 @@ export default function ({ template, script, styles }) {
 
     return {
       result: new Function('return ' + script)(), // eslint-disable-line
-      styles: styles.join(' ')
+      styles: styles && styles.join(' ')
     }
   } catch (e) {
     return { error: e }
