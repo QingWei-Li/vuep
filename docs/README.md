@@ -254,6 +254,7 @@ Done. Now you are free to use ES6, Vuep will compile them to ES5 through the bab
 </script>
 </script>
 
+<br>
 
 # Warning
 
