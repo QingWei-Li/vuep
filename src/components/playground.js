@@ -18,6 +18,7 @@ export default {
     return {
       content: '',
       preview: '',
+      styles: '',
       error: ''
     }
   },
@@ -33,7 +34,8 @@ export default {
       win = h(Preview, {
         class: 'vuep-preview',
         props: {
-          value: this.preview
+          value: this.preview,
+          styles: this.styles
         },
         on: {
           error: this.handleError
@@ -93,6 +95,7 @@ export default {
 
       this.content = result.content
       this.preview = compiledCode.result
+      this.styles = compiledCode.styles
     }
   }
 }

@@ -1,8 +1,6 @@
-const MODULE_REGEXP = /(export\sdefault|modules.export)/
+const MODULE_REGEXP = /(export\sdefault|modules.export\s?=)/
 
 export default function ({ template, script, styles }) {
-  // TODO: styles
-
   script = script.trim()
 
   // Not exist template or render function
@@ -20,7 +18,10 @@ export default function ({ template, script, styles }) {
 
     script = script.replace(MODULE_REGEXP, '').replace(/;$/g, '')
 
-    return { result: new Function('return ' + script)() }// eslint-disable-line
+    return {
+      result: new Function('return ' + script)(), // eslint-disable-line
+      styles: styles.join(' ')
+    }
   } catch (e) {
     return { error: e }
   }

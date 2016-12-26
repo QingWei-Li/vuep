@@ -7,9 +7,14 @@
 }
 
 .vuep-editor, .vuep-preview, .vuep-error {
+  margin-right: 10px;
   width: 50%;
   border-radius: 2px;
   overflow: hidden;
+
+  &:last-child {
+    margin-right: 0;
+  }
 }
 
 .vuep-editor {
@@ -21,7 +26,6 @@
 }
 
 .vuep-preview, .vuep-error {
-  margin-left: 10px;
   border: 1px solid #eee;
   padding: 25px 35px;
   box-sizing: border-box;

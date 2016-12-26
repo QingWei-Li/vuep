@@ -3,10 +3,14 @@ import Vue from 'vue/dist/vue.common'
 export default {
   name: 'preview',
 
-  props: ['value'],
+  props: ['value', 'styles'],
 
   render (h) {
-    return h('div')
+    this.className = 'vuep-scoped-' + this._uid
+
+    return h('div', {
+      class: this.className
+    })
   },
 
   mounted () {
@@ -22,8 +26,16 @@ export default {
 
       this.codeEl = document.createElement('div')
       this.$el.appendChild(this.codeEl)
+
       try {
         this.codeVM = new Vue(val).$mount(this.codeEl)
+
+        if (this.styles) {
+          const style = document.createElement('style')
+
+          style.innerHTML = this.styles.replace(/([\.#\w]+\w+\s?{)/g, `.${this.className} $1`)
+          this.codeVM.$el.appendChild(style)
+        }
       } catch (e) {
         this.$emit('error', e)
       }
