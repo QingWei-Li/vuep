@@ -17,7 +17,7 @@ export default {
     renderCode (val) {
       if (this.codeVM) {
         this.codeVM.$destroy()
-        this.codeVM.$el.parentNode && this.$el.removeChild(this.codeVM.$el)
+        this.$el.removeChild(this.codeVM.$el)
       }
 
       this.codeEl = document.createElement('div')

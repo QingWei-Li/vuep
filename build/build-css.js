@@ -23,7 +23,7 @@ processor.process(load(file), { from: resolve(__dirname, '../src/style/', file) 
     cssnano(loadDist(file))
       .then(function (result) {
         save('vuep.min.css', result.css)
-        console.log('cssnao - ' + file)
+        console.log('cssnao - vuep.min.css')
       })
   }).catch(function (err) {
     console.log(err)

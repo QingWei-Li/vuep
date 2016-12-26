@@ -44,7 +44,7 @@ build({
 })
 
 build({
-  entry: 'index.js',
+  entry: 'index.cjs.js',
   output: 'vuep.common.js',
   format: 'cjs',
   external: ['codemirror', 'vue/dist/vue.common']

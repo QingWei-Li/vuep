@@ -71,8 +71,8 @@ export default {
   },
 
   methods: {
-    handleError (e) {
-      this.error = e
+    handleError (err) {
+      this.error = err
     },
 
     executeCode (code) {

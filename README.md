@@ -32,6 +32,7 @@ yarn add vuep codemirror
 ## Quick start
 
 **Need the full (compiler-included) CommonJS build of Vue**
+
 webpack config
 ```javascript
 {
