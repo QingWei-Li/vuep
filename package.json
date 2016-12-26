@@ -29,6 +29,7 @@
   },
   "homepage": "https://qingwei-li.github.io/vuep/",
   "devDependencies": {
+    "codemirror": "^5.22.0",
     "cssnano": "^3.9.1",
     "eslint": "^3.12.2",
     "eslint-config-vue": "^2.0.1",
@@ -44,9 +45,6 @@
     "vue": "^2.1.7"
   },
   "peerDependencies": {
-    "codemirror": "^5.22.0"
-  },
-  "dependencies": {
     "codemirror": "^5.22.0"
   }
 }
