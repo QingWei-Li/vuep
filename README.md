@@ -19,7 +19,7 @@ yarn add vuep codemirror
 
 ```html
 <!-- Import theme -->
-<link rel="stylesheet" href="//unpkg.com/vuep.css">
+<link rel="stylesheet" href="//unpkg.com/vuep/dist/vuep.css">
 
 <!-- depend vue -->
 <script src="//unpkg.com/vue"></script>
@@ -77,7 +77,7 @@ new Vue({
 ```
 
 ### Usage B
-you can written in HTML file or even the Markdown file.
+you can written in HTML file or even a markdown file.
 
 ```html
 <div id="app">

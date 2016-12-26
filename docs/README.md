@@ -94,7 +94,7 @@ template
 index.html
 ```html
 <!-- Import theme -->
-<link rel="stylesheet" href="//unpkg.com/vuep.css">
+<link rel="stylesheet" href="//unpkg.com/vuep/dist/vuep.css">
 
 <!-- depend vue -->
 <script src="//unpkg.com/vue"></script>
