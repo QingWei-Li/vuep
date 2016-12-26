@@ -5,16 +5,6 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var CodeMirror = _interopDefault(require('codemirror'));
 var Vue$1 = _interopDefault(require('vue/dist/vue.common'));
 
-if (typeof require !== 'undefined') {
-  require('codemirror/addon/mode/overlay');
-  require('codemirror/addon/mode/simple');
-  require('codemirror/mode/css/css');
-  require('codemirror/mode/htmlmixed/htmlmixed');
-  require('codemirror/mode/javascript/javascript');
-  require('codemirror/mode/vue/vue');
-  require('codemirror/mode/xml/xml');
-}
-
 var DEFAULT_OPTIONS = {
   lineNumbers: true,
   mode: 'text/x-vue',
@@ -34,7 +24,7 @@ var Editor = {
   },
 
   mounted: function mounted () {
-    this.editor = CodeMirror.fromTextArea(this.$refs.textarea, Object.assign(DEFAULT_OPTIONS, this.options));
+    this.editor = CodeMirror.fromTextArea(this.$refs.textarea, Object.assign({}, DEFAULT_OPTIONS, this.options));
     this.editor.on('change', this.handleChange);
   },
 
@@ -48,10 +38,14 @@ var Editor = {
 var Preview = {
   name: 'preview',
 
-  props: ['value'],
+  props: ['value', 'styles'],
 
   render: function render (h) {
-    return h('div', { class: 'preview' })
+    this.className = 'vuep-scoped-' + this._uid;
+
+    return h('div', {
+      class: this.className
+    })
   },
 
   mounted: function mounted () {
@@ -62,13 +56,21 @@ var Preview = {
     renderCode: function renderCode (val) {
       if (this.codeVM) {
         this.codeVM.$destroy();
-        this.codeVM.$el.parentNode && this.$el.removeChild(this.codeVM.$el);
+        this.$el.removeChild(this.codeVM.$el);
       }
 
       this.codeEl = document.createElement('div');
       this.$el.appendChild(this.codeEl);
+
       try {
         this.codeVM = new Vue$1(val).$mount(this.codeEl);
+
+        if (this.styles) {
+          var style = document.createElement('style');
+
+          style.innerHTML = this.styles.replace(/([\.#\w]+\w+\s?{)/g, ("." + (this.className) + " $1"));
+          this.codeVM.$el.appendChild(style);
+        }
       } catch (e) {
         this.$emit('error', e);
       }
@@ -106,14 +108,12 @@ var parser = function (input) {
   }
 };
 
-var MODULE_REGEXP = /(export\sdefault|modules.export)/;
+var MODULE_REGEXP = /(export\sdefault|modules.export\s?=)/;
 
 var compiler = function (ref) {
   var template = ref.template;
   var script = ref.script;
   var styles = ref.styles;
-
-  // TODO: styles
 
   script = script.trim();
 
@@ -132,13 +132,16 @@ var compiler = function (ref) {
 
     script = script.replace(MODULE_REGEXP, '').replace(/;$/g, '');
 
-    return { result: new Function('return ' + script)() }// eslint-disable-line
+    return {
+      result: new Function('return ' + script)(), // eslint-disable-line
+      styles: styles && styles.join(' ')
+    }
   } catch (e) {
     return { error: e }
   }
 };
 
-var Vuep$1 = {
+var Vuep$2 = {
   name: 'Vuep',
 
   props: {
@@ -153,6 +156,7 @@ var Vuep$1 = {
     return {
       content: '',
       preview: '',
+      styles: '',
       error: ''
     }
   },
@@ -168,7 +172,8 @@ var Vuep$1 = {
       win = h(Preview, {
         class: 'vuep-preview',
         props: {
-          value: this.preview
+          value: this.preview,
+          styles: this.styles
         },
         on: {
           error: this.handleError
@@ -206,8 +211,8 @@ var Vuep$1 = {
   },
 
   methods: {
-    handleError: function handleError (e) {
-      this.error = e;
+    handleError: function handleError (err) {
+      this.error = err;
     },
 
     executeCode: function executeCode (code) {
@@ -228,23 +233,34 @@ var Vuep$1 = {
 
       this.content = result.content;
       this.preview = compiledCode.result;
+      if (compiledCode.styles) { this.styles = compiledCode.styles; }
     }
   }
 };
 
-Vuep$1.config = function (opts) {
-  Vuep$1.props.options.default = function () { return opts; };
+Vuep$2.config = function (opts) {
+  Vuep$2.props.options.default = function () { return opts; };
 };
 
 function install (Vue, opts) {
-  Vuep$1.config(opts);
-  Vue.component(Vuep$1.name, Vuep$1);
+  Vuep$2.config(opts);
+  Vue.component(Vuep$2.name, Vuep$2);
 }
 
-Vuep$1.install = install;
+Vuep$2.install = install;
 
 if (typeof Vue !== 'undefined') {
   Vue.use(install); // eslint-disable-line
 }
 
-module.exports = Vuep$1;
+if (typeof require !== 'undefined') {
+  require('codemirror/addon/mode/overlay');
+  require('codemirror/addon/mode/simple');
+  require('codemirror/mode/css/css');
+  require('codemirror/mode/htmlmixed/htmlmixed');
+  require('codemirror/mode/javascript/javascript');
+  require('codemirror/mode/vue/vue');
+  require('codemirror/mode/xml/xml');
+}
+
+module.exports = Vuep$2;

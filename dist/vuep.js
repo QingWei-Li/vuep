@@ -9127,16 +9127,6 @@ return CodeMirror;
 })));
 });
 
-if (typeof require !== 'undefined') {
-  require('codemirror/addon/mode/overlay');
-  require('codemirror/addon/mode/simple');
-  require('codemirror/mode/css/css');
-  require('codemirror/mode/htmlmixed/htmlmixed');
-  require('codemirror/mode/javascript/javascript');
-  require('codemirror/mode/vue/vue');
-  require('codemirror/mode/xml/xml');
-}
-
 var DEFAULT_OPTIONS = {
   lineNumbers: true,
   mode: 'text/x-vue',
@@ -9156,7 +9146,7 @@ var Editor = {
   },
 
   mounted: function mounted () {
-    this.editor = codemirror.fromTextArea(this.$refs.textarea, Object.assign(DEFAULT_OPTIONS, this.options));
+    this.editor = codemirror.fromTextArea(this.$refs.textarea, Object.assign({}, DEFAULT_OPTIONS, this.options));
     this.editor.on('change', this.handleChange);
   },
 
@@ -9170,10 +9160,14 @@ var Editor = {
 var Preview = {
   name: 'preview',
 
-  props: ['value'],
+  props: ['value', 'styles'],
 
   render: function render (h) {
-    return h('div', { class: 'preview' })
+    this.className = 'vuep-scoped-' + this._uid;
+
+    return h('div', {
+      class: this.className
+    })
   },
 
   mounted: function mounted () {
@@ -9184,13 +9178,21 @@ var Preview = {
     renderCode: function renderCode (val) {
       if (this.codeVM) {
         this.codeVM.$destroy();
-        this.codeVM.$el.parentNode && this.$el.removeChild(this.codeVM.$el);
+        this.$el.removeChild(this.codeVM.$el);
       }
 
       this.codeEl = document.createElement('div');
       this.$el.appendChild(this.codeEl);
+
       try {
         this.codeVM = new Vue$1(val).$mount(this.codeEl);
+
+        if (this.styles) {
+          var style = document.createElement('style');
+
+          style.innerHTML = this.styles.replace(/([\.#\w]+\w+\s?{)/g, ("." + (this.className) + " $1"));
+          this.codeVM.$el.appendChild(style);
+        }
       } catch (e) {
         this.$emit('error', e);
       }
@@ -9228,14 +9230,12 @@ var parser = function (input) {
   }
 };
 
-var MODULE_REGEXP = /(export\sdefault|modules.export)/;
+var MODULE_REGEXP = /(export\sdefault|modules.export\s?=)/;
 
 var compiler = function (ref) {
   var template = ref.template;
   var script = ref.script;
   var styles = ref.styles;
-
-  // TODO: styles
 
   script = script.trim();
 
@@ -9254,7 +9254,10 @@ var compiler = function (ref) {
 
     script = script.replace(MODULE_REGEXP, '').replace(/;$/g, '');
 
-    return { result: new Function('return ' + script)() }// eslint-disable-line
+    return {
+      result: new Function('return ' + script)(), // eslint-disable-line
+      styles: styles && styles.join(' ')
+    }
   } catch (e) {
     return { error: e }
   }
@@ -9275,6 +9278,7 @@ var Vuep$1 = {
     return {
       content: '',
       preview: '',
+      styles: '',
       error: ''
     }
   },
@@ -9290,7 +9294,8 @@ var Vuep$1 = {
       win = h(Preview, {
         class: 'vuep-preview',
         props: {
-          value: this.preview
+          value: this.preview,
+          styles: this.styles
         },
         on: {
           error: this.handleError
@@ -9328,8 +9333,8 @@ var Vuep$1 = {
   },
 
   methods: {
-    handleError: function handleError (e) {
-      this.error = e;
+    handleError: function handleError (err) {
+      this.error = err;
     },
 
     executeCode: function executeCode (code) {
@@ -9350,6 +9355,7 @@ var Vuep$1 = {
 
       this.content = result.content;
       this.preview = compiledCode.result;
+      if (compiledCode.styles) { this.styles = compiledCode.styles; }
     }
   }
 };

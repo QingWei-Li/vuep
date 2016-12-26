@@ -513,11 +513,23 @@ span.CodeMirror-selectedtext {
   display: -ms-flexbox;
   display: flex;
   font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+  height: 400px;
 }
 
 .vuep-editor, .vuep-preview, .vuep-error {
-  width: 50%;
   border-radius: 2px;
+  height: inherit;
+  margin-right: 10px;
+  overflow: hidden;
+  width: 50%;
+}
+
+.vuep-editor .CodeMirror, .vuep-preview .CodeMirror, .vuep-error .CodeMirror {
+  height: inherit;
+}
+
+.vuep-editor:last-child, .vuep-preview:last-child, .vuep-error:last-child {
+  margin-right: 0;
 }
 
 .vuep-editor {
@@ -529,10 +541,9 @@ span.CodeMirror-selectedtext {
 }
 
 .vuep-preview, .vuep-error {
-  margin-left: 10px;
   border: 1px solid #eee;
-  padding: 25px 35px;
   box-sizing: border-box;
+  padding: 25px 35px;
 }
 
 @media (max-width: 600px) {
@@ -541,7 +552,7 @@ span.CodeMirror-selectedtext {
   }
 
   .vuep-editor, .vuep-preview, .vuep-error {
-    width: 100%;
     margin: 0 0 15px 0;
+    width: 100%;
   }
 }
