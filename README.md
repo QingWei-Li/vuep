@@ -121,10 +121,10 @@ you can written in HTML file or even a markdown file.
 ## Development
 
 ```shell
-npm i && npm run dev
+yarn && yarn dev
+# npm i && npm run dev
 open test.html
 ```
 
 ## LICENSE
 MIT
-
