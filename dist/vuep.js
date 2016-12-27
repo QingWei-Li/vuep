@@ -9146,12 +9146,14 @@ var Editor = {
   },
 
   mounted: function mounted () {
-    this.editor = codemirror.fromTextArea(this.$refs.textarea, Object.assign({}, DEFAULT_OPTIONS, this.options));
+    this.currentOptions = Object.assign({}, DEFAULT_OPTIONS, this.options);
+    this.editor = codemirror.fromTextArea(this.$refs.textarea, this.currentOptions);
     this.editor.on('change', this.handleChange);
   },
 
   methods: {
     handleChange: function handleChange () {
+      /* istanbul ignore next */
       this.$emit('change', this.editor.getValue());
     }
   }
@@ -9167,7 +9169,17 @@ var Preview = {
 
     return h('div', {
       class: this.className
-    })
+    }, [
+      this.scopedStyle ? h('style', null, this.scopedStyle) : ''
+    ])
+  },
+
+  computed: {
+    scopedStyle: function scopedStyle () {
+      return this.styles
+        ? this.styles.replace(/([\.#\w]+\w*?\s?{)/g, ("." + (this.className) + " $1"))
+        : ''
+    }
   },
 
   mounted: function mounted () {
@@ -9186,14 +9198,8 @@ var Preview = {
 
       try {
         this.codeVM = new Vue$1(val).$mount(this.codeEl);
-
-        if (this.styles) {
-          var style = document.createElement('style');
-
-          style.innerHTML = this.styles.replace(/([\.#\w]+\w+\s?{)/g, ("." + (this.className) + " $1"));
-          this.codeVM.$el.appendChild(style);
-        }
       } catch (e) {
+        /* istanbul ignore next */
         this.$emit('error', e);
       }
     }
@@ -9226,6 +9232,7 @@ var parser = function (input) {
       styles: styles
     }
   } catch (e) {
+    /* istanbul ignore next */
     return { error: e }
   }
 };
@@ -9234,18 +9241,22 @@ var MODULE_REGEXP = /(export\sdefault|modules.export\s?=)/;
 
 var compiler = function (ref) {
   var template = ref.template;
-  var script = ref.script;
+  var script = ref.script; if ( script === void 0 ) script = '{}';
   var styles = ref.styles;
-
-  script = script.trim();
 
   // Not exist template or render function
   if (!/template:|render:|render\(/.test(script) && template) {
-    script = script.replace(/}.*?$/, (", template: `" + (template.trim()) + "`}"));
+    script = script.trim().replace(/}$/, (", template: `" + (template.trim()) + "`}"));
   }
 
+  // fix { , template: '...' } => { template: '...' }
+  script = script.replace(/{\s*?,/, '{');
+
   try {
+    if (script === '{}') { throw Error('no data') }
+
     // https://www.npmjs.com/package/babel-standalone
+    /* istanbul ignore next */
     if (typeof Babel !== 'undefined') {
       script = Babel.transform(script, { // eslint-disable-line
         presets: [['es2015', { 'loose': true, 'modules': false }], 'stage-2']
@@ -9255,7 +9266,7 @@ var compiler = function (ref) {
     script = script.replace(MODULE_REGEXP, '').replace(/;$/g, '');
 
     return {
-      result: new Function('return ' + script)(), // eslint-disable-line
+      result: new Function('return ' + script.trim())(), // eslint-disable-line
       styles: styles && styles.join(' ')
     }
   } catch (e) {
@@ -9286,6 +9297,7 @@ var Vuep$1 = {
   render: function render (h) {
     var win;
 
+    /* istanbul ignore next */
     if (this.error) {
       win = h('div', {
         class: 'vuep-error'
@@ -9319,6 +9331,7 @@ var Vuep$1 = {
   },
 
   created: function created () {
+      /* istanbul ignore next */
     if (this.$isServer) { return }
     var content = this.template;
 
@@ -9326,6 +9339,7 @@ var Vuep$1 = {
       var html = document.querySelector(this.template);
       if (!html) { throw Error(((this.template) + " is not found")) }
 
+      /* istanbul ignore next */
       content = html.innerHTML;
     }
 
@@ -9334,6 +9348,7 @@ var Vuep$1 = {
 
   methods: {
     handleError: function handleError (err) {
+      /* istanbul ignore next */
       this.error = err;
     },
 
@@ -9341,15 +9356,17 @@ var Vuep$1 = {
       this.error = '';
       var result = parser(code);
 
+      /* istanbul ignore next */
       if (result.error) {
-        this.error = result.error.toString();
+        this.error = result.error.message;
         return
       }
 
       var compiledCode = compiler(result);
 
+      /* istanbul ignore next */
       if (compiledCode.error) {
-        this.error = compiledCode.error.toString();
+        this.error = compiledCode.error.message;
         return
       }
 

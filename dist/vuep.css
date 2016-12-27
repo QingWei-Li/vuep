@@ -520,7 +520,7 @@ span.CodeMirror-selectedtext {
   border-radius: 2px;
   height: inherit;
   margin-right: 10px;
-  overflow: hidden;
+  overflow: scroll;
   width: 50%;
 }
 
@@ -549,10 +549,12 @@ span.CodeMirror-selectedtext {
 @media (max-width: 600px) {
   .vuep {
     display: block;
+    height: auto;
   }
 
   .vuep-editor, .vuep-preview, .vuep-error {
     margin: 0 0 15px 0;
+    height: 400px;
     width: 100%;
   }
 }
