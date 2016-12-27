@@ -2,5 +2,5 @@ sudo: false
 language: node_js
 node_js: stable
 after_success:
-  - npm i coveralls
-  - npm run test:ci
+  - yarn coveralls
+  - yarn test:ci
