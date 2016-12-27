@@ -19,12 +19,14 @@ export default {
   },
 
   mounted () {
-    this.editor = CodeMirror.fromTextArea(this.$refs.textarea, Object.assign({}, DEFAULT_OPTIONS, this.options))
+    this.currentOptions = Object.assign({}, DEFAULT_OPTIONS, this.options)
+    this.editor = CodeMirror.fromTextArea(this.$refs.textarea, this.currentOptions)
     this.editor.on('change', this.handleChange)
   },
 
   methods: {
     handleChange () {
+      /* istanbul ignore next */
       this.$emit('change', this.editor.getValue())
     }
   }

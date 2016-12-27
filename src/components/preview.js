@@ -10,7 +10,17 @@ export default {
 
     return h('div', {
       class: this.className
-    })
+    }, [
+      this.scopedStyle ? h('style', null, this.scopedStyle) : ''
+    ])
+  },
+
+  computed: {
+    scopedStyle () {
+      return this.styles
+        ? this.styles.replace(/([\.#\w]+\w*?\s?{)/g, `.${this.className} $1`)
+        : ''
+    }
   },
 
   mounted () {
@@ -29,14 +39,8 @@ export default {
 
       try {
         this.codeVM = new Vue(val).$mount(this.codeEl)
-
-        if (this.styles) {
-          const style = document.createElement('style')
-
-          style.innerHTML = this.styles.replace(/([\.#\w]+\w+\s?{)/g, `.${this.className} $1`)
-          this.codeVM.$el.appendChild(style)
-        }
       } catch (e) {
+        /* istanbul ignore next */
         this.$emit('error', e)
       }
     }

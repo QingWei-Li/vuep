@@ -1,5 +1,10 @@
 # Vuep (vue playground)
 
+[![Build Status](https://travis-ci.org/QingWei-Li/vuep.svg?branch=master)](https://travis-ci.org/QingWei-Li/vuep)
+[![Coverage Status](https://coveralls.io/repos/github/QingWei-Li/vuep/badge.svg?branch=master)](https://coveralls.io/github/QingWei-Li/vuep?branch=master)
+[![npm](https://img.shields.io/npm/v/vuep.svg)](https://www.npmjs.com/package/vuep)
+
+
 > 🎡 A component for rendering Vue components with live editor and preview.
 
 ![image](https://cloud.githubusercontent.com/assets/7565692/21482443/093e4970-cbaf-11e6-89f0-eae73fc49741.png)
@@ -104,11 +109,6 @@ you can written in HTML file or even a markdown file.
 - https://github.com/FormidableLabs/component-playground
 
 
-## Roadmap
-
-- Unit test
-
-
 ## Contributing
 
 - Fork it!
@@ -122,7 +122,7 @@ you can written in HTML file or even a markdown file.
 
 ```shell
 npm i && npm run dev
-open test/test.html
+open test.html
 ```
 
 ## LICENSE

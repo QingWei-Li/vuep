@@ -24,6 +24,7 @@ export default function (input) {
       styles: styles
     }
   } catch (e) {
+    /* istanbul ignore next */
     return { error: e }
   }
 }

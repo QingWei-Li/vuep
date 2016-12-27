@@ -26,6 +26,7 @@ export default {
   render (h) {
     let win
 
+    /* istanbul ignore next */
     if (this.error) {
       win = h('div', {
         class: 'vuep-error'
@@ -59,6 +60,7 @@ export default {
   },
 
   created () {
+      /* istanbul ignore next */
     if (this.$isServer) return
     let content = this.template
 
@@ -66,6 +68,7 @@ export default {
       const html = document.querySelector(this.template)
       if (!html) throw Error(`${this.template} is not found`)
 
+      /* istanbul ignore next */
       content = html.innerHTML
     }
 
@@ -74,6 +77,7 @@ export default {
 
   methods: {
     handleError (err) {
+      /* istanbul ignore next */
       this.error = err
     },
 
@@ -81,15 +85,17 @@ export default {
       this.error = ''
       const result = parser(code)
 
+      /* istanbul ignore next */
       if (result.error) {
-        this.error = result.error.toString()
+        this.error = result.error.message
         return
       }
 
       const compiledCode = compiler(result)
 
+      /* istanbul ignore next */
       if (compiledCode.error) {
-        this.error = compiledCode.error.toString()
+        this.error = compiledCode.error.message
         return
       }
 

@@ -1,3 +1,10 @@
 {
-  "extends": "vue"
+  "extends": "vue",
+  "globals": {
+    "test": true,
+    "expect": true
+  },
+  "env": {
+    "mocha": true
+  }
 }
