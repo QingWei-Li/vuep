@@ -1,6 +1,6 @@
 import mock from './mock'
 import Vue from 'vue'
-import Editor from '../src/components/Editor'
+import Editor from '../src/components/editor'
 
 const Ctor = Vue.extend(Editor)
 
