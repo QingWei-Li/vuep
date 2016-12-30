@@ -42,7 +42,7 @@
 # Usage
 
 ## CommonJS
-**Need the full (compiler-included) CommonJS build of Vue**
+**Need the full (compiler-included) build of Vue**
 
 webpack config
 ```javascript
@@ -258,7 +258,7 @@ Done. Now you are free to use ES6, Vuep will compile them to ES5 through the bab
 
 # Warning
 
-If you use `script(type="text/x-template)"`,The script tag must be at the end, for example
+If you use `script(type="text/x-template)"`, The script tag must be at the end, for example
 
 ```html
 <script type="text/x-template">
