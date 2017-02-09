@@ -8,6 +8,7 @@ if (typeof require !== 'undefined') {
   require('codemirror/mode/javascript/javascript')
   require('codemirror/mode/vue/vue')
   require('codemirror/mode/xml/xml')
+  require('codemirror/mode/jsx/jsx')
 }
 
 export default Vuep

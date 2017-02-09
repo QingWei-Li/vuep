@@ -254,6 +254,38 @@ Done. Now you are free to use ES6, Vuep will compile them to ES5 through the bab
 </script>
 </script>
 
+## Can I use JSX?
+
+Sure. Two ways:
+
+1. Use a [custom built babel-standalone with vue's jsx support](https://github.com/reverland/babel-standalone)
+2. build [a babel plugin transform vue jsx which can be used in browser](https://github.com/reverland/babel-plugin-transform-vue-jsx).and register this plugin in babel-standalone.
+
+```html
+<script src="https://cdn.rawgit.com/reverland/babel-plugin-transform-vue-jsx/4d36bff3/dist/babel-plugin-transform-vue-jsx.min.js"></script>
+<script>
+  Babel.registerPlugin('transform-vue-jsx', window['babel-plugin-transform-vue-jsx']);
+</script>
+```
+
+
+<vuep template="#demo4" :options="{ mode: 'jsx'}"></vuep>
+
+<script type="text/x-template" id="demo4">
+  export default {
+    data() {
+      return {
+        count: 0
+      }
+    },
+    render (h) {
+      return (
+        <div style={{ color: 'red' }}> { this.count } </div>
+      )
+    }
+  }
+</script>
+
 <br>
 
 # Warning
