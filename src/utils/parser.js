@@ -3,7 +3,7 @@ export default function (input) {
 
   html.innerHTML = input
 
-  const content = html.innerHTML
+  const content = input
 
   try {
     const template = html.querySelector('template')
