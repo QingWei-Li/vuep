@@ -89,7 +89,7 @@ var parser = function (input) {
 
   html.innerHTML = input;
 
-  var content = html.innerHTML;
+  var content = input;
 
   try {
     var template = html.querySelector('template');
@@ -137,7 +137,8 @@ var compiler = function (ref) {
     /* istanbul ignore next */
     if (typeof Babel !== 'undefined') {
       script = Babel.transform(script, { // eslint-disable-line
-        presets: [['es2015', { 'loose': true, 'modules': false }], 'stage-2']
+        presets: [['es2015', { 'loose': true, 'modules': false }], 'stage-2'],
+        plugins: ['transform-vue-jsx']
       }).code;
     }
 
@@ -278,6 +279,7 @@ if (typeof require !== 'undefined') {
   require('codemirror/mode/javascript/javascript');
   require('codemirror/mode/vue/vue');
   require('codemirror/mode/xml/xml');
+  require('codemirror/mode/jsx/jsx');
 }
 
 module.exports = Vuep$2;
