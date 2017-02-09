@@ -268,10 +268,9 @@ Sure. Two ways:
 </script>
 ```
 
+<vuep template="#demo5" :options="{ mode: 'jsx'}"></vuep>
 
-<vuep template="#demo4" :options="{ mode: 'jsx'}"></vuep>
-
-<script type="text/x-template" id="demo4">
+<script type="text/x-template" id="demo5">
   export default {
     data() {
       return {
