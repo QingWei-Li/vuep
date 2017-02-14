@@ -138,7 +138,8 @@ var compiler = function (ref) {
     if (typeof Babel !== 'undefined') {
       script = Babel.transform(script, { // eslint-disable-line
         presets: [['es2015', { 'loose': true, 'modules': false }], 'stage-2'],
-        plugins: ['transform-vue-jsx']
+        plugins: ['transform-vue-jsx'],
+        comments: false
       }).code;
     }
 
