@@ -9197,6 +9197,7 @@ var Preview = {
       this.$el.appendChild(this.codeEl);
 
       try {
+        val.parent = this;
         this.codeVM = new Vue$1(val).$mount(this.codeEl);
       } catch (e) {
         /* istanbul ignore next */
