@@ -38,6 +38,7 @@ export default {
       this.$el.appendChild(this.codeEl)
 
       try {
+        val.parent = this
         this.codeVM = new Vue(val).$mount(this.codeEl)
       } catch (e) {
         /* istanbul ignore next */
