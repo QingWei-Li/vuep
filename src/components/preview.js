@@ -1,4 +1,5 @@
 import Vue from 'vue/dist/vue.common'
+import assign from '../utils/assign' // eslint-disable-line
 
 export default {
   name: 'preview',
@@ -38,8 +39,8 @@ export default {
       this.$el.appendChild(this.codeEl)
 
       try {
-        val.parent = this
-        this.codeVM = new Vue(val).$mount(this.codeEl)
+        const parent = this
+        this.codeVM = new Vue({ parent, ...val }).$mount(this.codeEl)
       } catch (e) {
         /* istanbul ignore next */
         this.$emit('error', e)

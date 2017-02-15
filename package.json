@@ -57,5 +57,8 @@
   },
   "peerDependencies": {
     "codemirror": "^5.22.0"
+  },
+  "dependencies": {
+    "simple-assign": "^0.1.0"
   }
 }

@@ -4,7 +4,9 @@ import buble from 'rollup-plugin-buble'
 
 export default {
   entry: 'src/index.js',
-  plugins: [buble(), commonjs(), nodeResolve()],
+  plugins: [buble({
+    objectAssign: 'assign'
+  }), commonjs(), nodeResolve()],
   dest: 'dist/vuep.js',
   format: 'umd',
   moduleName: 'Vuep',

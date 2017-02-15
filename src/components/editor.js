@@ -1,4 +1,5 @@
 import CodeMirror from 'codemirror'
+import assign from '../utils/assign'
 
 const DEFAULT_OPTIONS = {
   lineNumbers: true,
@@ -19,7 +20,7 @@ export default {
   },
 
   mounted () {
-    this.currentOptions = Object.assign({}, DEFAULT_OPTIONS, this.options)
+    this.currentOptions = assign({}, DEFAULT_OPTIONS, this.options)
     this.editor = CodeMirror.fromTextArea(this.$refs.textarea, this.currentOptions)
     this.editor.on('change', this.handleChange)
   },

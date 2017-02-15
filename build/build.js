@@ -8,7 +8,9 @@ var build = function (opts) {
   rollup
     .rollup({
       entry: 'src/' + opts.entry,
-      plugins: [buble(), commonjs(), nodeResolve()].concat(opts.plugins || []),
+      plugins: [buble({
+        objectAssign: 'assign'
+      }), commonjs(), nodeResolve()].concat(opts.plugins || []),
       external: opts.external
     })
     .then(function (bundle) {
