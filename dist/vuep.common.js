@@ -5,6 +5,22 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var CodeMirror = _interopDefault(require('codemirror'));
 var Vue$1 = _interopDefault(require('vue/dist/vue.common'));
 
+var index = function (target) {
+  var arguments$1 = arguments;
+
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments$1[i];
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+  return target;
+};
+
+var assign = Object.assign || index;
+
 var DEFAULT_OPTIONS = {
   lineNumbers: true,
   mode: 'text/x-vue',
@@ -24,7 +40,7 @@ var Editor = {
   },
 
   mounted: function mounted () {
-    this.currentOptions = Object.assign({}, DEFAULT_OPTIONS, this.options);
+    this.currentOptions = assign({}, DEFAULT_OPTIONS, this.options);
     this.editor = CodeMirror.fromTextArea(this.$refs.textarea, this.currentOptions);
     this.editor.on('change', this.handleChange);
   },
@@ -75,8 +91,8 @@ var Preview = {
       this.$el.appendChild(this.codeEl);
 
       try {
-        val.parent = this;
-        this.codeVM = new Vue$1(val).$mount(this.codeEl);
+        var parent = this;
+        this.codeVM = new Vue$1(assign({}, {parent: parent}, val)).$mount(this.codeEl);
       } catch (e) {
         /* istanbul ignore next */
         this.$emit('error', e);
