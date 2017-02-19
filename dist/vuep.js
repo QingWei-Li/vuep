@@ -9225,10 +9225,7 @@ var Preview = {
 
 var parser = function (input) {
   var html = document.createElement('div');
-
-  html.innerHTML = input;
-
-  var content = input;
+  var content = html.innerHTML = input.trim();
 
   try {
     var template = html.querySelector('template');
@@ -9243,14 +9240,14 @@ var parser = function (input) {
     }
 
     return {
-      content: content,
+      content: /<\/script>$/g.test(content) ? content : (content + '\n</script>'),
       template: template ? template.innerHTML : '',
       script: script ? script.innerHTML : '',
       styles: styles
     }
-  } catch (e) {
+  } catch (error) {
     /* istanbul ignore next */
-    return { error: e }
+    return { error: error }
   }
 };
 
@@ -9288,8 +9285,8 @@ var compiler = function (ref) {
       result: new Function('return ' + script.trim())(), // eslint-disable-line
       styles: styles && styles.join(' ')
     }
-  } catch (e) {
-    return { error: e }
+  } catch (error) {
+    return { error: error }
   }
 };
 
