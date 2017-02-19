@@ -1,9 +1,6 @@
 export default function (input) {
   const html = document.createElement('div')
-
-  html.innerHTML = input
-
-  const content = input
+  const content = html.innerHTML = input.trim()
 
   try {
     const template = html.querySelector('template')
@@ -18,13 +15,13 @@ export default function (input) {
     }
 
     return {
-      content,
+      content: /<\/script>$/g.test(content) ? content : (content + '\n</script>'),
       template: template ? template.innerHTML : '',
       script: script ? script.innerHTML : '',
       styles: styles
     }
-  } catch (e) {
+  } catch (error) {
     /* istanbul ignore next */
-    return { error: e }
+    return { error }
   }
 }

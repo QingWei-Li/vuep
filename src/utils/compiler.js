@@ -28,7 +28,7 @@ export default function ({ template, script = '{}', styles }) {
       result: new Function('return ' + script.trim())(), // eslint-disable-line
       styles: styles && styles.join(' ')
     }
-  } catch (e) {
-    return { error: e }
+  } catch (error) {
+    return { error }
   }
 }
