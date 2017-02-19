@@ -9,7 +9,7 @@
     "test:ci": "npm test && cat ./coverage/lcov.info | coveralls",
     "build": "node build/build.js && npm run build:css",
     "build:css": "node build/build-css.js",
-    "dev": "rollup -c build/watch.js -w"
+    "dev": "rollup -c build/watch.js"
   },
   "jest": {
     "browser": true,

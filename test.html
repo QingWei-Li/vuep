@@ -8,7 +8,6 @@
 </head>
 <body>
   <div id="app">
-    <vuep template="#example3" :options="{ mode: 'jsx' }"></vuep>
     <vuep template="#example2" :options="{ mode: 'javascript' }"></vuep>
     <vuep template="#example"></vuep>
   </div>
@@ -65,40 +64,10 @@ export default {
 }
 </script>
 
-<script type="text/x-template" id="example3">
-export default {
-  data () {
-    return {
-      name: 'Vuep',
-      features: [
-        'Vue component spec',
-        'Scoped style',
-        'UMD and CommonJS build'
-      ]
-    }
-  },
-  render (h) {
-    return (
-      <photoshop style={{ color: 'red'}}></photoshop>
-    )
-  }
-}
-</script>
-
-
 </body>
 <script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
-<script src="https://cdn.rawgit.com/reverland/babel-plugin-transform-vue-jsx/4d36bff3/dist/babel-plugin-transform-vue-jsx.min.js"></script>
 <script src="node_modules/codemirror/lib/codemirror.js"></script>
 <script src="node_modules/vue/dist/vue.js"></script>
-<script>
-  Babel.registerPlugin('transform-vue-jsx', window['babel-plugin-transform-vue-jsx']);
-  Vue.component('photoshop', {
-    render: function (h) {
-      return h('div', 'test')
-    }
-  })
-</script>
 <script src="dist/vuep.js"></script>
 
 <script>

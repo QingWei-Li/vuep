@@ -150,9 +150,17 @@ var compiler = function (ref) {
     // https://www.npmjs.com/package/babel-standalone
     /* istanbul ignore next */
     if (typeof Babel !== 'undefined') {
+      var plugins = [];
+
+      // Register jsx plugin
+      if (window['babel-plugin-transform-vue-jsx']) {
+        Babel.registerPlugin('transform-vue-jsx', window['babel-plugin-transform-vue-jsx']); // eslint-disable-line
+        plugins.push('transform-vue-jsx');
+      }
+
       script = Babel.transform(script, { // eslint-disable-line
         presets: [['es2015', { 'loose': true, 'modules': false }], 'stage-2'],
-        plugins: ['transform-vue-jsx'],
+        plugins: plugins,
         comments: false
       }).code;
     }
