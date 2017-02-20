@@ -18,7 +18,7 @@ describe('playground', () => {
   it('work', () => {
     const vm = new Ctor({
       propsData: {
-        template: `export default { template: '<div>123</div>' }`
+        template: `module.exports = { template: '<div>123</div>' }`
       }
     }).$mount()
 
@@ -26,14 +26,14 @@ describe('playground', () => {
       expect(vm.preview).toEqual({
         template: '<div>123</div>'
       })
-      expect(vm.content).toEqual(`export default { template: '<div>123</div>' }`)
+      expect(vm.content).toEqual(`module.exports = { template: '<div>123</div>' }`)
     })
   })
 
   it('styles', () => {
     const vm = new Ctor({
       propsData: {
-        template: `<style>.main {}</style><script>export default {}</script>`
+        template: `<style>.main {}</style><script>module.exports = {}</script>`
       }
     }).$mount()
 

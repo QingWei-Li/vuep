@@ -1,16 +1,6 @@
-const MODULE_REGEXP = /(export\sdefault|modules.export\s?=)/
-
-export default function ({ template, script = '{}', styles }) {
-  // Not exist template or render function
-  if (!/template:|render:|render\(/.test(script) && template) {
-    script = script.trim().replace(/}$/, `, template: \`${template.trim()}\`}`)
-  }
-
-  // fix { , template: '...' } => { template: '...' }
-  script = script.replace(/{\s*?,/, '{')
-
+export default function ({ template, script = 'module.exports={}', styles }) {
   try {
-    if (script === '{}') throw Error('no data')
+    if (script === 'module.exports={}' && !template) throw Error('no data')
 
     // https://www.npmjs.com/package/babel-standalone
     /* istanbul ignore next */
@@ -24,16 +14,18 @@ export default function ({ template, script = '{}', styles }) {
       }
 
       script = Babel.transform(script, { // eslint-disable-line
-        presets: [['es2015', { 'loose': true, 'modules': false }], 'stage-2'],
+        presets: [['es2015', { 'loose': true }], 'stage-2'],
         plugins,
         comments: false
       }).code
     }
-
-    script = script.replace(MODULE_REGEXP, '').replace(/;$/g, '')
-
+    script = `(function(exports){var module={};module.exports=exports;${script};return module.exports.__esModule?module.exports.default:module.exports;})({})`
+    var result = new Function('return ' + script)() || {} // eslint-disable-line
+    if (template) {
+      result.template = template
+    }
     return {
-      result: new Function('return ' + script.trim())(), // eslint-disable-line
+      result: result,
       styles: styles && styles.join(' ')
     }
   } catch (error) {
