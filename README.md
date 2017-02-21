@@ -62,7 +62,7 @@ new Vue({
       </template>
 
       <script>
-        export default {
+        module.exports = {
           data: function () {
             return { name: 'Vue' }
           }
@@ -95,7 +95,7 @@ you can written in HTML file or even a markdown file.
   </template>
 
   <script>
-    export default {
+    module.exports = {
       data: function () {
         return { name: 'Vue' }
       }

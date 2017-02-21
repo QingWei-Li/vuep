@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  export default {
+  module.exports = {
     data () {
       return {
         name: 'Vuep',
@@ -71,7 +71,7 @@ new Vue({
       </template>
 
       <script>
-        export default {
+        module.exports = {
           data: function () {
             return { name: 'Vue' }
           }
@@ -111,7 +111,7 @@ template
 </template>
 
 <script>
-  export default {
+  module.exports = {
     data: function () {
       return { name: 'Vue' }
     }
@@ -153,7 +153,7 @@ Vue.use(Vuep /*, { codemirror config */ })
 <vuep :options="{ mode: 'javascript' }" template="#demo4"></vuep>
 
 <script type="text/x-template" id="demo4">
-  export default {
+  module.exports = {
     template: `<div>I'am {{ name }}</div>`,
 
     data: function () {
@@ -166,7 +166,7 @@ Vue.use(Vuep /*, { codemirror config */ })
 <vuep :options="{ mode: 'javascript' }" template="#demo4"></vuep>
 
 <script type="text/x-template" id="demo4">
-  export default {
+  module.exports = {
     template: `<div>I'am {{ name }}</div>`,
 
     data: function () {
@@ -207,7 +207,7 @@ Configure the options for the component
 </template>
 
 <script>
-  export default {
+  module.exports = {
     data: function () {
       return { name: 'Vue' }
     }
@@ -268,7 +268,7 @@ Sure. Two ways:
 <vuep template="#demo5" :options="{ mode: 'jsx'}"></vuep>
 
 <script type="text/x-template" id="demo5">
-  export default {
+  module.exports = {
     data() {
       return {
         count: 0

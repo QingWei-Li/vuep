@@ -9,7 +9,7 @@
     "test:ci": "npm test && cat ./coverage/lcov.info | coveralls",
     "build": "node build/build.js && npm run build:css",
     "build:css": "node build/build-css.js",
-    "dev": "rollup -c build/watch.js"
+    "dev": "rollup -wc build/watch.js"
   },
   "jest": {
     "browser": true,
@@ -53,7 +53,7 @@
     "rollup-plugin-commonjs": "^6.0.1",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-uglify": "^1.0.1",
-    "rollup-watch": "^2.5.0",
+    "rollup-watch": "^3.2.2",
     "vue": "^2.1.7"
   },
   "peerDependencies": {

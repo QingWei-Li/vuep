@@ -33,7 +33,7 @@
 </template>
 
 <script>
-  export default {
+  module.exports = {
     data () {
       return {
         name: 'Vuep',
@@ -49,7 +49,7 @@
 </script>
 
 <script type="text/x-template" id="example2">
-export default {
+module.exports = {
   template: '<div>123</div>',
   data () {
     return {
@@ -65,7 +65,6 @@ export default {
 </script>
 
 </body>
-<script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
 <script src="node_modules/codemirror/lib/codemirror.js"></script>
 <script src="node_modules/vue/dist/vue.js"></script>
 <script src="dist/vuep.js"></script>
