@@ -4,7 +4,7 @@ import assign from '../utils/assign' // eslint-disable-line
 export default {
   name: 'preview',
 
-  props: ['value', 'styles'],
+  props: ['value', 'styles', 'keepData'],
 
   render (h) {
     this.className = 'vuep-scoped-' + this._uid
@@ -30,6 +30,8 @@ export default {
 
   methods: {
     renderCode (val) {
+      const lastData = this.keepData && this.codeVM && assign({}, this.codeVM.$data)
+
       if (this.codeVM) {
         this.codeVM.$destroy()
         this.$el.removeChild(this.codeVM.$el)
@@ -41,6 +43,12 @@ export default {
       try {
         const parent = this
         this.codeVM = new Vue({ parent, ...val }).$mount(this.codeEl)
+
+        if (lastData) {
+          for (const key in lastData) {
+            this.codeVM[key] = lastData[key]
+          }
+        }
       } catch (e) {
         /* istanbul ignore next */
         this.$emit('error', e)
