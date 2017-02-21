@@ -409,7 +409,7 @@ span.CodeMirror-selectedtext {
     Original material color scheme by Mattia Astorino (https://github.com/equinusocio/material-theme)
 
 */
-.cm-s-material {
+.cm-s-material.CodeMirror {
   background-color: #263238;
   color: rgba(233, 237, 237, 1);
 }

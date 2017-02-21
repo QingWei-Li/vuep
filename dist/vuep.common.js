@@ -56,7 +56,7 @@ var Editor = {
 var Preview = {
   name: 'preview',
 
-  props: ['value', 'styles'],
+  props: ['value', 'styles', 'keepData'],
 
   render: function render (h) {
     this.className = 'vuep-scoped-' + this._uid;
@@ -82,6 +82,10 @@ var Preview = {
 
   methods: {
     renderCode: function renderCode (val) {
+      var this$1 = this;
+
+      var lastData = this.keepData && this.codeVM && assign({}, this.codeVM.$data);
+
       if (this.codeVM) {
         this.codeVM.$destroy();
         this.$el.removeChild(this.codeVM.$el);
@@ -93,6 +97,12 @@ var Preview = {
       try {
         var parent = this;
         this.codeVM = new Vue$1(assign({}, {parent: parent}, val)).$mount(this.codeEl);
+
+        if (lastData) {
+          for (var key in lastData) {
+            this$1.codeVM[key] = lastData[key];
+          }
+        }
       } catch (e) {
         /* istanbul ignore next */
         this.$emit('error', e);
@@ -129,23 +139,13 @@ var parser = function (input) {
   }
 };
 
-var MODULE_REGEXP = /(export\sdefault|modules.export\s?=)/;
-
 var compiler = function (ref) {
   var template = ref.template;
-  var script = ref.script; if ( script === void 0 ) script = '{}';
+  var script = ref.script; if ( script === void 0 ) script = 'module.exports={}';
   var styles = ref.styles;
 
-  // Not exist template or render function
-  if (!/template:|render:|render\(/.test(script) && template) {
-    script = script.trim().replace(/}$/, (", template: `" + (template.trim()) + "`}"));
-  }
-
-  // fix { , template: '...' } => { template: '...' }
-  script = script.replace(/{\s*?,/, '{');
-
   try {
-    if (script === '{}') { throw Error('no data') }
+    if (script === 'module.exports={}' && !template) { throw Error('no data') }
 
     // https://www.npmjs.com/package/babel-standalone
     /* istanbul ignore next */
@@ -159,16 +159,18 @@ var compiler = function (ref) {
       }
 
       script = Babel.transform(script, { // eslint-disable-line
-        presets: [['es2015', { 'loose': true, 'modules': false }], 'stage-2'],
+        presets: [['es2015', { 'loose': true }], 'stage-2'],
         plugins: plugins,
         comments: false
       }).code;
     }
-
-    script = script.replace(MODULE_REGEXP, '').replace(/;$/g, '');
-
+    script = "(function(exports){var module={};module.exports=exports;" + script + ";return module.exports.__esModule?module.exports.default:module.exports;})({})";
+    var result = new Function('return ' + script)() || {}; // eslint-disable-line
+    if (template) {
+      result.template = template;
+    }
     return {
-      result: new Function('return ' + script.trim())(), // eslint-disable-line
+      result: result,
       styles: styles && styles.join(' ')
     }
   } catch (error) {
@@ -184,7 +186,8 @@ var Vuep$2 = {
       type: String,
       required: true
     },
-    options: {}
+    options: {},
+    keepData: Boolean
   },
 
   data: function data () {
@@ -209,7 +212,8 @@ var Vuep$2 = {
         class: 'vuep-preview',
         props: {
           value: this.preview,
-          styles: this.styles
+          styles: this.styles,
+          keepData: this.keepData
         },
         on: {
           error: this.handleError
