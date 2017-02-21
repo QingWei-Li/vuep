@@ -19,7 +19,7 @@ test('only template', () => {
 
 test('only empty script', () => {
   const compiled = compiler({
-    script: 'export default {}'
+    script: 'module.exports = {}'
   })
 
   expect(compiled.result).toEqual({})
@@ -27,7 +27,7 @@ test('only empty script', () => {
 
 test('only script', () => {
   const compiled = compiler({
-    script: `{ template: '<div></div>' }`
+    script: `module.exports = {template : '<div></div>'}`
   })
 
   expect(compiled.result).toEqual({
@@ -38,7 +38,7 @@ test('only script', () => {
 test('script and tempalte', () => {
   const compiled = compiler({
     template: '<div><h1>cinwell</h1></div>',
-    script: 'export default { b: {} }'
+    script: 'module.exports = { b: {} }'
   })
 
   expect(compiled.result).toEqual({

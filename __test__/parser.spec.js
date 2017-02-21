@@ -7,13 +7,13 @@ test('script tag', () => {
       <div>123</div>
     </template>
     <script>
-      export default {}
+      module.exports = {}
     </script>
   `
   const result = parser(fixture)
 
   expect(result.template).toContain('<div>123</div>')
-  expect(result.script).toContain('export default {}')
+  expect(result.script).toContain('module.exports = {}')
   expect(Array.isArray(result.styles)).toBeTruthy()
   expect(result.styles.length).toEqual(1)
   expect(result.styles[0]).toContain('div { color: red }')
@@ -35,10 +35,10 @@ test('multiple style', () => {
 })
 
 test('only JavaScript', () => {
-  const fixture = 'export default {}'
+  const fixture = 'module.exports = {}'
   const result = parser(fixture)
 
   expect(result.template).toBeUndefined()
-  expect(result.script).toContain('export default {}')
+  expect(result.script).toContain('module.exports = {}')
   expect(result.styles).toBeUndefined()
 })
