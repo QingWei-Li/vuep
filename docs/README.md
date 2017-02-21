@@ -263,9 +263,6 @@ Sure. Two ways:
 
 ```html
 <script src="https://cdn.rawgit.com/reverland/babel-plugin-transform-vue-jsx/4d36bff3/dist/babel-plugin-transform-vue-jsx.min.js"></script>
-<script>
-  Babel.registerPlugin('transform-vue-jsx', window['babel-plugin-transform-vue-jsx']);
-</script>
 ```
 
 <vuep template="#demo5" :options="{ mode: 'jsx'}"></vuep>
@@ -284,8 +281,6 @@ Sure. Two ways:
     }
   }
 </script>
-
-<br>
 
 # Warning
 

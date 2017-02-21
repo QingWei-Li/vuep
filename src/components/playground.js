@@ -11,7 +11,8 @@ export default {
       type: String,
       required: true
     },
-    options: {}
+    options: {},
+    keepData: Boolean
   },
 
   data () {
@@ -36,7 +37,8 @@ export default {
         class: 'vuep-preview',
         props: {
           value: this.preview,
-          styles: this.styles
+          styles: this.styles,
+          keepData: this.keepData
         },
         on: {
           error: this.handleError
