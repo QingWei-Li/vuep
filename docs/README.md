@@ -282,6 +282,33 @@ Sure. Two ways:
   }
 </script>
 
+## Can I use `require`?
+
+Sure. if you use ES6 syntax you can even use `import`.
+
+vuep implement a nodejs like synchrounous require interface in browser, so you can directly require a js file.
+
+```html
+<script src="https://cdn.rawgit.com/reverland/babel-plugin-transform-vue-jsx/4d36bff3/dist/babel-plugin-transform-vue-jsx.min.js"></script>
+```
+
+<vuep template="#demo6" :options="{ mode: 'jsx'}"></vuep>
+
+<script type="text/x-template" id="demo6">
+module.exports = {
+  template: '<div><remote></remote></div>',
+  components: {
+    remote: require('remote.js')
+  },
+  data () {
+    return {
+      name: 'Vuep',
+    }
+  }
+}
+</script>
+
+
 # Warning
 
 If you use `script(type="text/x-template)"`, The script tag must be at the end, for example
