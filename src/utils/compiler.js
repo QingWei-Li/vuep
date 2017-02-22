@@ -1,3 +1,6 @@
+import require from './require.js'
+window.require = require  // I dont know, but if we want seperate scope, maybe should transfer Vue into this scope
+
 export default function ({ template, script = 'module.exports={}', styles }) {
   try {
     if (script === 'module.exports={}' && !template) throw Error('no data')
