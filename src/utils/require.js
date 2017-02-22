@@ -4,8 +4,7 @@ const JSMODULE_REG = /\.((js)|(jsx))$/
 
 export default function require (url) {
   if (JSMODULE_REG.test(url)) {
-    const script = get(url)
-    return evalJS(script)
+    return getAndCache(url)
   }
 }
 
@@ -20,8 +19,8 @@ const cache = {}
  * @param {string} url
  * @return { then(resolve, reject), abort }
  */
-function get (url) {
-  const xhr = new window.XMLHttpRequest()
+function getAndCache (url) {
+  const xhr = new XMLHttpRequest() // eslint-disable-line
 
   if (cache[url]) {
     return cache[url]
@@ -29,5 +28,7 @@ function get (url) {
 
   xhr.open('GET', url, false)
   xhr.send()
-  return xhr.responseText
+  const script = xhr.responseText
+  cache[url] = evalJS(script)
+  return cache[url]
 }
