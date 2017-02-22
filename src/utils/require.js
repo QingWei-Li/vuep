@@ -2,7 +2,7 @@ const JSMODULE_REG = /\.((js)|(jsx))$/
 export default function (url, callback) {
   if (JSMODULE_REG.test(url)) {
     let script = get(url)
-    if (typeof window.Babel !== 'undefined') {
+    if (typeof Babel !== 'undefined') {
       const plugins = []
 
       // Register jsx plugin
@@ -33,10 +33,7 @@ const cache = {}
  * @return { then(resolve, reject), abort }
  */
 function get (url) {
-  const xhr = new XMLHttpRequest()
-  const on = function () {
-    xhr.addEventListener.apply(xhr, arguments)
-  }
+  const xhr = new window.XMLHttpRequest()
 
   if (cache[url]) {
     return cache[url]
@@ -45,5 +42,4 @@ function get (url) {
   xhr.open('GET', url, false)
   xhr.send()
   return xhr.responseText
-
 }
