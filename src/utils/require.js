@@ -8,9 +8,7 @@ export default function require (url) {
   }
 }
 
-window.require = require
-
-// from docsify: https://github.com/QingWei-Li/docsify/blob/master/src/core/fetch/ajax.js
+// modify from docsify: https://github.com/QingWei-Li/docsify/blob/master/src/core/fetch/ajax.js
 
 const cache = {}
 

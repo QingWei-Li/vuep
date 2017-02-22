@@ -1,3 +1,6 @@
+import require from './require.js'
+window.require = require
+
 export default function evalJS (script) {
   // https://www.npmjs.com/package/babel-standalone
   /* istanbul ignore next */
