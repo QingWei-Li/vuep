@@ -50,21 +50,21 @@
 
 <script type="text/x-template" id="example2">
 module.exports = {
-  template: '<div>123</div>',
+  template: '<div><remote></remote></div>',
+  components: {
+    remote: require('remote.js')
+  },
   data () {
     return {
       name: 'Vuep',
-      features: [
-        'Vue component spec',
-        'Scoped style',
-        'UMD and CommonJS build'
-      ]
     }
   }
 }
 </script>
 
 </body>
+<script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
+<script src="https://cdn.rawgit.com/reverland/babel-plugin-transform-vue-jsx/4d36bff3/dist/babel-plugin-transform-vue-jsx.min.js"></script>
 <script src="node_modules/codemirror/lib/codemirror.js"></script>
 <script src="node_modules/vue/dist/vue.js"></script>
 <script src="dist/vuep.js"></script>
