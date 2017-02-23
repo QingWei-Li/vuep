@@ -9373,6 +9373,64 @@ var parser = function (input) {
   }
 };
 
+var JSMODULE_REG = /\.((js)|(jsx))$/;
+
+function require (url) {
+  if (JSMODULE_REG.test(url)) {
+    return getAndCache(url)
+  }
+}
+
+// modify from docsify: https://github.com/QingWei-Li/docsify/blob/master/src/core/fetch/ajax.js
+
+var cache = {};
+
+/**
+ * Simple ajax get
+ * @param {string} url
+ * @return { then(resolve, reject), abort }
+ */
+function getAndCache (url) {
+  var xhr = new XMLHttpRequest(); // eslint-disable-line
+
+  if (cache[url]) {
+    return cache[url]
+  }
+
+  xhr.open('GET', url, false);
+  xhr.send();
+  var script = xhr.responseText;
+  cache[url] = evalJS(script);
+  return cache[url]
+}
+
+window.require = require;
+
+function evalJS (script) {
+  // https://www.npmjs.com/package/babel-standalone
+  /* istanbul ignore next */
+
+  if (typeof Babel !== 'undefined') {
+    var plugins = [];
+
+    // Register jsx plugin
+    if (window['babel-plugin-transform-vue-jsx']) {
+      Babel.registerPlugin('transform-vue-jsx', window['babel-plugin-transform-vue-jsx']); // eslint-disable-line
+      plugins.push('transform-vue-jsx');
+    }
+
+    script =  Babel.transform(script, { // eslint-disable-line
+      presets: [['es2015', { 'loose': true }], 'stage-2'],
+      plugins: plugins,
+      comments: false
+    }).code;
+  }
+
+  script = "(function(exports){var module={};module.exports=exports;" + script + ";return module.exports.__esModule?module.exports.default:module.exports;})({})";
+  var result = new Function('return ' + script)() || {}; // eslint-disable-line
+  return result
+}
+
 var compiler = function (ref) {
   var template = ref.template;
   var script = ref.script; if ( script === void 0 ) script = 'module.exports={}';
@@ -9380,26 +9438,7 @@ var compiler = function (ref) {
 
   try {
     if (script === 'module.exports={}' && !template) { throw Error('no data') }
-
-    // https://www.npmjs.com/package/babel-standalone
-    /* istanbul ignore next */
-    if (typeof Babel !== 'undefined') {
-      var plugins = [];
-
-      // Register jsx plugin
-      if (window['babel-plugin-transform-vue-jsx']) {
-        Babel.registerPlugin('transform-vue-jsx', window['babel-plugin-transform-vue-jsx']); // eslint-disable-line
-        plugins.push('transform-vue-jsx');
-      }
-
-      script = Babel.transform(script, { // eslint-disable-line
-        presets: [['es2015', { 'loose': true }], 'stage-2'],
-        plugins: plugins,
-        comments: false
-      }).code;
-    }
-    script = "(function(exports){var module={};module.exports=exports;" + script + ";return module.exports.__esModule?module.exports.default:module.exports;})({})";
-    var result = new Function('return ' + script)() || {}; // eslint-disable-line
+    var result = evalJS(script);
     if (template) {
       result.template = template;
     }
