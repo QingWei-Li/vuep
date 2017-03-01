@@ -288,8 +288,14 @@ Sure. if you use ES6 syntax you can even use `import`.
 
 vuep implement a nodejs like synchrounous require interface in browser, so you can directly require a js file.
 
-```html
-<script src="https://cdn.rawgit.com/reverland/babel-plugin-transform-vue-jsx/4d36bff3/dist/babel-plugin-transform-vue-jsx.min.js"></script>
+```jsx
+/* remote.js */
+export default {
+  name: 'remote',
+  render (h) {
+    return <div>from remote</div>
+  }
+}
 ```
 
 <vuep template="#demo6" :options="{ mode: 'jsx'}"></vuep>
@@ -298,7 +304,7 @@ vuep implement a nodejs like synchrounous require interface in browser, so you c
 module.exports = {
   template: '<div><remote></remote></div>',
   components: {
-    remote: require('remote.js')
+    remote: require('remote.js') // or require('https://qingwei-li.github.io/vuep/remote.js')
   },
   data () {
     return {
