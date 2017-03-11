@@ -516,11 +516,34 @@ span.CodeMirror-selectedtext {
   height: 400px;
 }
 
+.vuep ::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #F5F5F5;
+}
+
+.vuep ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: #F5F5F5;
+}
+
+.vuep ::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #bbb;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+
+.vuep ::-webkit-scrollbar-thumb:hover {
+  border-radius: 8px;
+  background-color: #777;
+}
+
 .vuep-editor, .vuep-preview, .vuep-error {
   border-radius: 2px;
   height: inherit;
   margin-right: 10px;
-  overflow: scroll;
+  overflow: auto;
   width: 50%;
 }
 

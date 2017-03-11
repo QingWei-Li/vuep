@@ -1,7 +1,7 @@
 # Demo
 <vuep template="#demo1"></vuep>
 
-<script type="text/x-template" id="demo1">
+<script v-pre type="text/x-template" id="demo1">
 <style>
   .main {
     color: #2c3e50;
@@ -105,7 +105,7 @@ template
 ```html
 <vuep template="#example"></vuep>
 
-<script type="text/x-template" id="example">
+<script v-pre type="text/x-template" id="example">
 <template>
   <div>Hello, {{ name }}!</div>
 </template>
@@ -152,7 +152,7 @@ Vue.use(Vuep /*, { codemirror config */ })
 ```html
 <vuep :options="{ mode: 'javascript' }" template="#demo4"></vuep>
 
-<script type="text/x-template" id="demo4">
+<script v-pre type="text/x-template" id="demo4">
   module.exports = {
     template: `<div>I'am {{ name }}</div>`,
 
@@ -165,7 +165,7 @@ Vue.use(Vuep /*, { codemirror config */ })
 
 <vuep :options="{ mode: 'javascript' }" template="#demo4"></vuep>
 
-<script type="text/x-template" id="demo4">
+<script v-pre type="text/x-template" id="demo4">
   module.exports = {
     template: `<div>I'am {{ name }}</div>`,
 
@@ -201,7 +201,7 @@ Configure the options for the component
 
 <vuep class="demo2" :options="{ theme: 'neo' }" template="#demo2"></vuep>
 
-<script type="text/x-template" id="demo2">
+<script v-pre type="text/x-template" id="demo2">
 <template>
   <div>Hello, {{ name }}!</div>
 </template>
@@ -234,7 +234,7 @@ Done. Now you are free to use ES6, Vuep will compile them to ES5 through the bab
 
 <vuep template="#demo3"></vuep>
 
-<script type="text/x-template" id="demo3">
+<script v-pre type="text/x-template" id="demo3">
 <template>
   <div>
     <button @click="count++">+</button>
@@ -267,7 +267,7 @@ Sure. Two ways:
 
 <vuep template="#demo5" :options="{ mode: 'jsx'}"></vuep>
 
-<script type="text/x-template" id="demo5">
+<script v-pre type="text/x-template" id="demo5">
   module.exports = {
     data() {
       return {
@@ -300,7 +300,7 @@ export default {
 
 <vuep template="#demo6" :options="{ mode: 'jsx'}"></vuep>
 
-<script type="text/x-template" id="demo6">
+<script v-pre type="text/x-template" id="demo6">
 module.exports = {
   template: '<div><remote></remote></div>',
   components: {
@@ -320,7 +320,7 @@ module.exports = {
 If you use `script(type="text/x-template)"`, The script tag must be at the end, for example
 
 ```html
-<script type="text/x-template">
+<script v-pre type="text/x-template">
   <style></style>
   <template></template>
   <script></script>
@@ -329,7 +329,7 @@ If you use `script(type="text/x-template)"`, The script tag must be at the end, 
 
 These will be parsed incorrectly
 ```html
-<script type="text/x-template">
+<script v-pre type="text/x-template">
   <script></script>
   <style></style>
   <template></template>
@@ -337,7 +337,7 @@ These will be parsed incorrectly
 ```
 
 ```html
-<script type="text/x-template">
+<script v-pre type="text/x-template">
   <style></style>
   <script></script>
   <template></template>

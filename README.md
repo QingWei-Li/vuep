@@ -89,7 +89,7 @@ you can written in HTML file or even a markdown file.
   <vuep template="#example"></vuep>
 </div>
 
-<script type="text/x-template" id="example">
+<script v-pre type="text/x-template" id="example">
   <template>
     <div>Hello, {{ name }}!</div>
   </template>
