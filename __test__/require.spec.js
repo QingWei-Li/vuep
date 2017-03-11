@@ -15,6 +15,16 @@ beforeAll(() => {
 })
 
 test('require works', () => {
+  global.XMLHttpRequest = () => {
+    return {
+      open (url) {
+        count++
+      },
+      send () {
+      },
+      responseText: 'module.exports="from remote"'
+    }
+  }
   expect(require('test.js')).toEqual('from remote')
 })
 
