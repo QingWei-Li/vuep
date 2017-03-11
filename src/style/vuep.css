@@ -5,13 +5,35 @@
   display: flex;
   font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
   height: 400px;
+
+  ::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #F5F5F5;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: #F5F5F5;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #bbb;
+    transition: all 0.5s;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    border-radius: 8px;
+    background-color: #777;
+  }
 }
 
 .vuep-editor, .vuep-preview, .vuep-error {
   border-radius: 2px;
   height: inherit;
   margin-right: 10px;
-  overflow: scroll;
+  overflow: auto;
   width: 50%;
 
   &:last-child {

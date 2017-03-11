@@ -7,12 +7,11 @@
   <link rel="stylesheet" href="node_modules/codemirror/addon/hint/show-hint.css">
 </head>
 <body>
-  <div id="app">
-    <vuep template="#example2" :options="{ mode: 'javascript' }"></vuep>
+  <div id="app" style="max-width: 800px; margin: auto;">
     <vuep template="#example"></vuep>
   </div>
 
-<script type="text/x-template" id="example">
+<script v-pre type="text/x-template" id="example">
 <style>
   .main {
     color: #2c3e50;
@@ -48,30 +47,12 @@
 </script>
 </script>
 
-<script type="text/x-template" id="example2">
-module.exports = {
-  template: '<div><remote></remote></div>',
-  components: {
-    remote: require('remote.js')
-  },
-  data () {
-    return {
-      name: 'Vuep',
-    }
-  }
-}
-</script>
-
-</body>
-<script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
-<script src="https://cdn.rawgit.com/reverland/babel-plugin-transform-vue-jsx/4d36bff3/dist/babel-plugin-transform-vue-jsx.min.js"></script>
+<!-- <script src="https://unpkg.com/babel-standalone/babel.min.js"></script> -->
+<!-- <script src="https://cdn.rawgit.com/reverland/babel-plugin-transform-vue-jsx/4d36bff3/dist/babel-plugin-transform-vue-jsx.min.js"></script> -->
 <script src="node_modules/codemirror/lib/codemirror.js"></script>
 <script src="node_modules/vue/dist/vue.js"></script>
 <script src="dist/vuep.js"></script>
 
 <script>
-  new Vue({ // eslint-disable-line
-    el: '#app'
-  })
+  new Vue().$mount('#app')
 </script>
-</html>
