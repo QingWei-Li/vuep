@@ -256,13 +256,10 @@ Done. Now you are free to use ES6, Vuep will compile them to ES5 through the bab
 
 ## Can I use JSX?
 
-Sure. Two ways:
-
-1. Use a [custom built babel-standalone with vue's jsx support](https://github.com/reverland/babel-standalone)
-2. build [a babel plugin transform vue jsx which can be used in browser](https://github.com/reverland/babel-plugin-transform-vue-jsx).and register this plugin in babel-standalone.
+Sure.
 
 ```html
-<script src="https://cdn.rawgit.com/reverland/babel-plugin-transform-vue-jsx/4d36bff3/dist/babel-plugin-transform-vue-jsx.min.js"></script>
+<script src="https://unpkg.com/babel-plugin-transform-vue-jsx"></script>
 ```
 
 <vuep template="#demo5" :options="{ mode: 'jsx'}"></vuep>
