@@ -8,7 +8,7 @@
 </head>
 <body>
   <div id="app" style="max-width: 800px; margin: auto;">
-    <vuep template="#example"></vuep>
+    <vuep @change="change" template="#example"></vuep>
   </div>
 
 <script v-pre type="text/x-template" id="example">
@@ -54,5 +54,11 @@
 <script src="dist/vuep.js"></script>
 
 <script>
-  new Vue().$mount('#app')
+  new Vue({
+    methods: {
+      change(val) {
+        console.log(val)
+      }
+    }
+  }).$mount('#app')
 </script>

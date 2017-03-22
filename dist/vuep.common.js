@@ -239,6 +239,8 @@ var Vuep$2 = {
   },
 
   render: function render (h) {
+    var this$1 = this;
+
     var win;
 
     /* istanbul ignore next */
@@ -268,27 +270,31 @@ var Vuep$2 = {
           options: this.options
         },
         on: {
-          change: this.executeCode
+          change: [this.executeCode, function (val) { return this$1.$emit('change', val); }]
         }
       }),
       win
     ])
   },
 
-  created: function created () {
-      /* istanbul ignore next */
-    if (this.$isServer) { return }
-    var content = this.template;
+  watch: {
+    template: {
+      immediate: true,
+      handler: function handler (val) {
+        if (this.$isServer || !val) { return }
+        var content = this.template;
 
-    if (/^[\.#]/.test(this.template)) {
-      var html = document.querySelector(this.template);
-      if (!html) { throw Error(((this.template) + " is not found")) }
+        if (/^[\.#]/.test(this.template)) {
+          var html = document.querySelector(this.template);
+          if (!html) { throw Error(((this.template) + " is not found")) }
 
-      /* istanbul ignore next */
-      content = html.innerHTML;
+          /* istanbul ignore next */
+          content = html.innerHTML;
+        }
+
+        this.executeCode(content);
+      }
     }
-
-    this.executeCode(content);
   },
 
   methods: {

@@ -177,6 +177,14 @@ Vue.use(Vuep /*, { codemirror config */ })
 
 <br>
 
+## Events
+
+### change
+
+```html
+<vuep @change="handleChange" template="#example"></vuep>
+```
+
 # FAQ
 ## How to change the default theme?
 
