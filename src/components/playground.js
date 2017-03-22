@@ -54,27 +54,31 @@ export default {
           options: this.options
         },
         on: {
-          change: this.executeCode
+          change: [this.executeCode, val => this.$emit('change', val)]
         }
       }),
       win
     ])
   },
 
-  created () {
-      /* istanbul ignore next */
-    if (this.$isServer) return
-    let content = this.template
+  watch: {
+    template: {
+      immediate: true,
+      handler (val) {
+        if (this.$isServer || !val) return
+        let content = this.template
 
-    if (/^[\.#]/.test(this.template)) {
-      const html = document.querySelector(this.template)
-      if (!html) throw Error(`${this.template} is not found`)
+        if (/^[\.#]/.test(this.template)) {
+          const html = document.querySelector(this.template)
+          if (!html) throw Error(`${this.template} is not found`)
 
-      /* istanbul ignore next */
-      content = html.innerHTML
+          /* istanbul ignore next */
+          content = html.innerHTML
+        }
+
+        this.executeCode(content)
+      }
     }
-
-    this.executeCode(content)
   },
 
   methods: {
