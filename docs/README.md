@@ -177,12 +177,26 @@ Vue.use(Vuep /*, { codemirror config */ })
 
 <br>
 
-## Events
-
-### change
+## v-model
 
 ```html
-<vuep @change="handleChange" template="#example"></vuep>
+<template>
+  <vuep v-model="value"></vuep>
+</template>
+
+<script>
+  export default {
+    data: () => ({
+      value: `module.exports = {
+  template: '<div>I\\'am {{ name }}</div>',
+
+  data: function () {
+    return { name: 'cinwell' }
+  }
+}`
+    })
+  }
+</script>
 ```
 
 # FAQ

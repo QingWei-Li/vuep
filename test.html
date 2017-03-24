@@ -8,7 +8,8 @@
 </head>
 <body>
   <div id="app" style="max-width: 800px; margin: auto;">
-    <vuep @change="change" template="#example"></vuep>
+    <vuep @input="change" v-model="value"></vuep>
+    <textarea v-model="value" rows="30" cols="100"></textarea>
   </div>
 
 <script v-pre type="text/x-template" id="example">
@@ -55,9 +56,19 @@
 
 <script>
   new Vue({
+    data: () => ({
+      value: `module.exports = {
+  template: '<div>I\\'am {{ name }}</div>',
+
+  data: function () {
+    return { name: 'cinwell' }
+  }
+}`
+    }),
+
     methods: {
       change(val) {
-        console.log(val)
+        // console.log(val)
       }
     }
   }).$mount('#app')

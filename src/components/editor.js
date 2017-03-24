@@ -25,6 +25,12 @@ export default {
     this.editor.on('change', this.handleChange)
   },
 
+  watch: {
+    value (val) {
+      val !== this.editor.getValue() && this.editor.setValue(val)
+    }
+  },
+
   methods: {
     handleChange () {
       /* istanbul ignore next */
