@@ -9279,6 +9279,12 @@ var Editor = {
     this.editor.on('change', this.handleChange);
   },
 
+  watch: {
+    value: function value (val) {
+      val !== this.editor.getValue() && this.editor.setValue(val);
+    }
+  },
+
   methods: {
     handleChange: function handleChange () {
       /* istanbul ignore next */
@@ -9455,12 +9461,10 @@ var Vuep$1 = {
   name: 'Vuep',
 
   props: {
-    template: {
-      type: String,
-      required: true
-    },
+    template: String,
     options: {},
-    keepData: Boolean
+    keepData: Boolean,
+    value: String
   },
 
   data: function data () {
@@ -9504,7 +9508,7 @@ var Vuep$1 = {
           options: this.options
         },
         on: {
-          change: [this.executeCode, function (val) { return this$1.$emit('change', val); }]
+          change: [this.executeCode, function (val) { return this$1.$emit('input', val); }]
         }
       }),
       win
@@ -9512,22 +9516,30 @@ var Vuep$1 = {
   },
 
   watch: {
-    template: {
+    value: {
       immediate: true,
       handler: function handler (val) {
-        if (this.$isServer || !val) { return }
-        var content = this.template;
-
-        if (/^[\.#]/.test(this.template)) {
-          var html = document.querySelector(this.template);
-          if (!html) { throw Error(((this.template) + " is not found")) }
-
-          /* istanbul ignore next */
-          content = html.innerHTML;
-        }
-
-        this.executeCode(content);
+        val && this.executeCode(val);
       }
+    }
+  },
+
+  created: function created () {
+      /* istanbul ignore next */
+    if (this.$isServer) { return }
+    var content = this.template;
+
+    if (/^[\.#]/.test(this.template)) {
+      var html = document.querySelector(this.template);
+      if (!html) { throw Error(((this.template) + " is not found")) }
+
+      /* istanbul ignore next */
+      content = html.innerHTML;
+    }
+
+    if (content) {
+      this.executeCode(content);
+      this.$emit('input', content);
     }
   },
 

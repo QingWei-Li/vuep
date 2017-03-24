@@ -1,5 +1,5 @@
 
-# Vuep <small>0.6</small>
+# Vuep <small>0.7</small>
 
 [![Build Status](https://travis-ci.org/QingWei-Li/vuep.svg?branch=master)](https://travis-ci.org/QingWei-Li/vuep)
 [![Coverage Status](https://coveralls.io/repos/github/QingWei-Li/vuep/badge.svg?branch=master)](https://coveralls.io/github/QingWei-Li/vuep?branch=master)
