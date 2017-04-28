@@ -293,7 +293,7 @@ Sure.
         count: 0
       }
     },
-    render (h) {
+    render () {
       return (
         <div style={{ color: 'red' }}> { this.count } </div>
       )
@@ -311,7 +311,7 @@ vuep implement a nodejs like synchrounous require interface in browser, so you c
 /* remote.js */
 export default {
   name: 'remote',
-  render (h) {
+  render () {
     return <div>from remote</div>
   }
 }

@@ -1,6 +1,6 @@
 export default {
   name: 'remote',
-  render (h) {
+  render () {
     return <div>from remote</div>
   }
 }
