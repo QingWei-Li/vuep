@@ -7,6 +7,8 @@
 
 > 🎡 A component for rendering Vue components with live editor and preview.
 
+<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/YdWAqnN2kHQmLtFQhEddaaPT/QingWei-Li/vuep'>  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/YdWAqnN2kHQmLtFQhEddaaPT/QingWei-Li/vuep.svg' /></a>
+
 ![image](https://cloud.githubusercontent.com/assets/7565692/21482443/093e4970-cbaf-11e6-89f0-eae73fc49741.png)
 
 ## Try it!
