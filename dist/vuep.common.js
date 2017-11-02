@@ -77,7 +77,7 @@ var Preview = {
   computed: {
     scopedStyle: function scopedStyle () {
       return this.styles
-        ? this.styles.replace(/([\.#\w]+\w*?\s?{)/g, ("." + (this.className) + " $1"))
+        ? insertScope(this.styles, ("." + (this.className)))
         : ''
     }
   },
@@ -116,6 +116,13 @@ var Preview = {
     }
   }
 };
+
+function insertScope (style, scope) {
+  var regex = /(^|\})\s*([^{]+)/g;
+  return style.trim().replace(regex, function (m, g1, g2) {
+    return g1 ? (g1 + " " + scope + " " + g2) : (scope + " " + g2)
+  })
+}
 
 var parser = function (input) {
   var html = document.createElement('div');
