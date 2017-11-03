@@ -6,12 +6,12 @@ const Ctor = Vue.extend(Preview)
 test('scoped style', () => {
   const vm = new Ctor({
     propsData: {
-      styles: '.main { color: red } #id { width: 10px } p { height: 20 }'
+      styles: '.main { color: red } #id { width: 10px } p { height: 20 } .wrapper input { background: url("");}'
     }
   }).$mount()
   const _uid = vm._uid
   const scoped = '.vuep-scoped-' + _uid
-  const fixture = `${scoped} .main { color: red } ${scoped} #id { width: 10px } ${scoped} p { height: 20 }`
+  const fixture = `${scoped} .main { color: red } ${scoped} #id { width: 10px } ${scoped} p { height: 20 } ${scoped} .wrapper input { background: url("");}`
 
   expect(vm.scopedStyle).toEqual(fixture)
 })
