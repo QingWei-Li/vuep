@@ -10,7 +10,8 @@ export default {
     template: String,
     options: {},
     keepData: Boolean,
-    value: String
+    value: String,
+    scope: Object
   },
 
   data () {
@@ -103,7 +104,7 @@ export default {
         return
       }
 
-      const compiledCode = compiler(result)
+      const compiledCode = compiler(result, this.scope)
 
       /* istanbul ignore next */
       if (compiledCode.error) {

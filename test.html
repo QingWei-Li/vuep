@@ -7,9 +7,23 @@
   <link rel="stylesheet" href="node_modules/codemirror/addon/hint/show-hint.css">
 </head>
 <body>
-  <div id="app" style="max-width: 800px; margin: auto;">
-    <vuep @input="change" v-model="value"></vuep>
-    <textarea v-model="value" rows="30" cols="100"></textarea>
+  <div>
+    <div id="template">
+      <h3>Template script</h3>
+      <pre>&lt;script v-pre type="text/x-template" id="example"&gt;</pre>
+      <pre>&lt;vuep template="#example"&gt;&lt;/vuep&gt;</pre>
+      <vuep template="#example"></vuep>
+    </div>
+
+    <div id="sfc">
+      <h3>Single File Component</h3>
+      <vuep v-model="value"></vuep>
+    </div>
+
+    <div id="sfc-scope">
+      <h3 id="">Single File Component with &lt;features&gt from scope</h3>
+      <vuep v-model="value" :scope="scope"></vuep>
+    </div>
   </div>
 
 <script v-pre type="text/x-template" id="example">
@@ -24,7 +38,7 @@
 
 <template>
   <div class="main">
-    <h2> Hello <span class="text">{{ name }}</span>!</h2>
+    <h2> Welcome to <span class="text">{{ name }}</span>!</h2>
     <h2>Features</h2>
     <ul>
       <li v-for="text in features">{{ text }}</li>
@@ -33,14 +47,15 @@
 </template>
 
 <script>
-  module.exports = {
+  export default {
     data () {
       return {
         name: 'Vuep',
         features: [
-          'Vue component spec',
+          'Single File Component',
+          'Babel for ES6/JSX/UMD/CommonJS',
           'Scoped style',
-          'UMD and CommonJS build'
+          'Customizable JavaScript scope'
         ]
       }
     }
@@ -48,28 +63,115 @@
 </script>
 </script>
 
-<!-- <script src="https://unpkg.com/babel-standalone/babel.min.js"></script> -->
-<!-- <script src="https://cdn.rawgit.com/reverland/babel-plugin-transform-vue-jsx/4d36bff3/dist/babel-plugin-transform-vue-jsx.min.js"></script> -->
+<script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
+<script src="https://unpkg.com/babel-plugin-transform-vue-jsx"></script>
 <script src="node_modules/codemirror/lib/codemirror.js"></script>
 <script src="node_modules/vue/dist/vue.js"></script>
 <script src="dist/vuep.js"></script>
 
 <script>
+   new Vue({
+     el: '#template',
+   })
+</script>
+<script>
   new Vue({
-    data: () => ({
-      value: `module.exports = {
-  template: '<div>I\\'am {{ name }}</div>',
-
-  data: function () {
-    return { name: 'cinwell' }
+    el: '#sfc',
+    data: function () {
+      return {
+        value: `
+        <style>
+  .main {
+    color: #2c3e50;
   }
-}`
-    }),
+  .text {
+    color: #4fc08d;
+  }
+</style>
 
-    methods: {
-      change(val) {
-        // console.log(val)
+<template>
+  <div class="main">
+    <h2> Welcome to <span class="text">{{ name }}</span>!</h2>
+    <div class="features">
+      <h3>Features</h3>
+      <ul>
+        <li v-for="feature in features">{{ feature }}</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default {
+    data () {
+      return {
+        name: 'Vuep',
+        features: [
+          'Vue Single File Component support',
+          'Scoped style',
+          'UMD and CommonJS build',
+          'Custom JavaScript scope'
+        ]
       }
     }
-  }).$mount('#app')
+  }`
+      }
+    }
+  })
+</script>
+<script>
+  var Features = {
+    props: {
+      features: Array
+    },
+    template: `<div class="features">
+  <h3>Features</h3>
+  <ul>
+    <li v-for="feature in features">{{ feature }}</li>
+  </ul>
+</div>`
+  }
+
+  new Vue({
+    el: '#sfc-scope',
+    data: function () {
+      return {
+        scope: { Features },
+        value: `
+<style>
+  .main {
+    color: #2c3e50;
+  }
+  .text {
+    color: #4fc08d;
+  }
+</style>
+
+<template>
+  <div class="main">
+    <h2> Welcome to <span class="text">{{ name }}</span>!</h2>
+    <features :features="features"></features>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {
+      Features
+    },
+    data () {
+      return {
+        name: 'Vuep',
+        features: [
+          'Single File Component',
+          'Babel for ES6/JSX/UMD/CommonJS',
+          'Scoped style',
+          'Customizable JavaScript scope'
+        ]
+      }
+    }
+  }<\/script>`
+      }
+    }
+  })
 </script>
