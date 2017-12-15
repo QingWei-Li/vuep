@@ -185,7 +185,9 @@ function getAndCache (url) {
 
 window.require = require$1;
 
-function evalJS (script) {
+function evalJS (script, scope) {
+  if ( scope === void 0 ) scope = {};
+
   // https://www.npmjs.com/package/babel-standalone
   /* istanbul ignore next */
 
@@ -194,7 +196,9 @@ function evalJS (script) {
 
     // Register jsx plugin
     if (window['babel-plugin-transform-vue-jsx']) {
-      Babel.registerPlugin('transform-vue-jsx', window['babel-plugin-transform-vue-jsx']); // eslint-disable-line
+      if (!Babel.availablePlugins['transform-vue-jsx']) { // eslint-disable-line
+        Babel.registerPlugin('transform-vue-jsx', window['babel-plugin-transform-vue-jsx']); // eslint-disable-line
+      }
       plugins.push('transform-vue-jsx');
     }
 
@@ -205,19 +209,27 @@ function evalJS (script) {
     }).code;
   }
 
-  script = "(function(exports){var module={};module.exports=exports;" + script + ";return module.exports.__esModule?module.exports.default:module.exports;})({})";
-  var result = new Function('return ' + script)() || {}; // eslint-disable-line
+  var scopeDecl = '';
+  for (var variable in scope) {
+    if (scope.hasOwnProperty(variable)) {
+      scopeDecl += 'var ' + variable + ' = __vuep[\'' + variable + '\'];';
+    }
+  }
+
+  script = "(function(exports){var module={};module.exports=exports;" + scopeDecl + ";" + script + ";return module.exports.__esModule?module.exports.default:module.exports;})({})";
+  var result = new Function('__vuep', 'return ' + script)(scope) || {}; // eslint-disable-line
   return result
 }
 
-var compiler = function (ref) {
+var compiler = function (ref, scope) {
   var template = ref.template;
   var script = ref.script; if ( script === void 0 ) script = 'module.exports={}';
   var styles = ref.styles;
+  if ( scope === void 0 ) scope = {};
 
   try {
     if (script === 'module.exports={}' && !template) { throw Error('no data') }
-    var result = evalJS(script);
+    var result = evalJS(script, scope);
     if (template) {
       result.template = template;
     }
@@ -237,7 +249,8 @@ var Vuep$2 = {
     template: String,
     options: {},
     keepData: Boolean,
-    value: String
+    value: String,
+    scope: Object
   },
 
   data: function data () {
@@ -332,7 +345,7 @@ var Vuep$2 = {
         return
       }
 
-      var compiledCode = compiler(result);
+      var compiledCode = compiler(result, this.scope);
 
       /* istanbul ignore next */
       if (compiledCode.error) {

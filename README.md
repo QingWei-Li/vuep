@@ -83,8 +83,9 @@ new Vue({
 </div>
 ```
 
+
 ### Usage B
-you can written in HTML file or even a markdown file.
+you can write in HTML file or even a markdown file.
 
 ```html
 <div id="app">
@@ -106,10 +107,78 @@ you can written in HTML file or even a markdown file.
 </script>
 ```
 
+
+### Scope
+
+You can customize scope by passing an object to the scope property. 
+
+This object can contain component available in main scope to include them into Vuep.
+
+- **features.js**: Component to showcase into Vuep
+```javascript
+export default {
+  props: {
+    features: Array
+  },
+  template: `<div class="features">
+<h3>Features</h3>
+<ul>
+  <li v-for="feature in features">{{ feature }}</li>
+</ul>
+</div>`
+}
+```
+
+- **app.js**: Application that needs to showcase Features component through Vuep
+```javascript
+import Vue from 'vue'
+
+import Features from 'features' // Import component
+
+new Vue({
+  el: '#app',
+  data: function () {
+    return {
+      scope: { Features }, // Set the scope of vuep
+      value: `
+<template>
+  <div>
+    <features :features="features"></features>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {
+      Features // This variable is available through scope and can be used to register component
+    },
+    data () {
+      return {
+        features: [
+          'Vue Single File Component support',
+          'Scoped style',
+          'UMD and CommonJS build',
+          'Define JavaScript scope'
+        ]
+      }
+    }
+  }<\/script>`
+      }
+    }
+  })
+```
+
+- **app template**: 
+```html
+<div id="app">
+  <vuep :value="value" :scope="scope"></vuep>
+</div>
+```
+
 ## Inspired
+
 - https://facebook.github.io/react/
 - https://github.com/FormidableLabs/component-playground
-
 
 ## Contributing
 

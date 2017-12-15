@@ -27,9 +27,10 @@
       return {
         name: 'Vuep',
         features: [
-          'Vue component spec',
+          'Single File Component',
+          'Babel for ES6/JSX/UMD/CommonJS',
           'Scoped style',
-          'UMD and CommonJS build'
+          'Customizable JavaScript scope'
         ]
       }
     }
@@ -37,14 +38,15 @@
 </script>
 </script>
 
-
 <br>
+
 # Usage
 
 ## CommonJS
 **Need the full (compiler-included) build of Vue**
 
 webpack config
+
 ```javascript
 {
   alias: {
@@ -128,7 +130,7 @@ https://codemirror.net/index.html
 
 ## Global config
 ```javascript
-Vue.use(Vuep /*, { codemirror config */ })
+Vue.use(Vuep /*, { codemirror config }*/)
 ```
 
 ## Props
@@ -197,6 +199,76 @@ Vue.use(Vuep /*, { codemirror config */ })
     })
   }
 </script>
+```
+
+## JavaScript scope
+
+You can customize JavaScript scope by setting an object to the scope property. 
+
+This object can contain component from your app scope to include them into Vuep scope.
+
+- **features.js**: Component to showcase into Vuep
+
+```javascript
+export default {
+  props: {
+    features: Array
+  },
+  template: `<div class="features">
+<h3>Features</h3>
+<ul>
+  <li v-for="feature in features">{{ feature }}</li>
+</ul>
+</div>`
+}
+```
+
+- **app.js**: Application that needs to showcase Features component through Vuep
+
+```javascript
+import Vue from 'vue'
+
+import Features from 'features' // Import component
+
+new Vue({
+  el: '#app',
+  data: function () {
+    return {
+      scope: { Features }, // Set the scope of vuep
+      value: `
+<template>
+  <div>
+    <features :features="features"></features>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {
+      Features // This variable is available through scope and can be used to register component
+    },
+    data () {
+      return {
+        features: [
+          'Single File Component',
+          'Babel for ES6/JSX/UMD/CommonJS',
+          'Scoped style',
+          'Customizable JavaScript scope'
+        ]
+      }
+    }
+  }<\/script>`
+      }
+    }
+  })
+```
+
+- **app template**:
+
+```html
+<div id="app">
+  <vuep :value="value" :scope="scope"></vuep>
+</div>
 ```
 
 # FAQ
@@ -281,6 +353,7 @@ Done. Now you are free to use ES6, Vuep will compile them to ES5 through the bab
 Sure.
 
 ```html
+<script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
 <script src="https://unpkg.com/babel-plugin-transform-vue-jsx"></script>
 ```
 
