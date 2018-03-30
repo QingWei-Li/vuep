@@ -11,8 +11,12 @@
 
 ![image](https://cloud.githubusercontent.com/assets/7565692/21482443/093e4970-cbaf-11e6-89f0-eae73fc49741.png)
 
-## Try it!
-https://qingwei-li.github.io/vuep/
+## Links
+
+- Docs: https://cinwell.com/vuep/
+- An online playgound: https://vuep.run
+
+
 
 ## Installation
 
