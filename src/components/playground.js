@@ -1,7 +1,6 @@
 import Editor from './editor'
 import Preview from './preview'
 import parser from '../utils/parser'
-import compiler from '../utils/compiler'
 
 export default {
   name: 'Vuep',
@@ -104,6 +103,7 @@ export default {
         return
       }
 
+      const compiler = require('../src/utils/compiler.js').default
       const compiledCode = compiler(result, this.scope)
 
       /* istanbul ignore next */

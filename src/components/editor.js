@@ -1,4 +1,3 @@
-import CodeMirror from 'codemirror'
 import assign from '../utils/assign'
 
 const DEFAULT_OPTIONS = {
@@ -21,7 +20,16 @@ export default {
 
   mounted () {
     this.currentOptions = assign({}, DEFAULT_OPTIONS, this.options)
-    this.editor = CodeMirror.fromTextArea(this.$refs.textarea, this.currentOptions)
+    const codemirror = require('codemirror')
+    require('codemirror/addon/mode/overlay')
+    require('codemirror/addon/mode/simple')
+    require('codemirror/mode/css/css')
+    require('codemirror/mode/htmlmixed/htmlmixed')
+    require('codemirror/mode/javascript/javascript')
+    require('codemirror/mode/vue/vue')
+    require('codemirror/mode/xml/xml')
+    require('codemirror/mode/jsx/jsx')
+    this.editor = codemirror.fromTextArea(this.$refs.textarea, this.currentOptions)
     this.editor.on('change', this.handleChange)
   },
 

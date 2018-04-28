@@ -2,7 +2,6 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var CodeMirror = _interopDefault(require('codemirror'));
 var Vue$1 = _interopDefault(require('vue/dist/vue.common'));
 
 var index = function (target) {
@@ -41,7 +40,16 @@ var Editor = {
 
   mounted: function mounted () {
     this.currentOptions = assign({}, DEFAULT_OPTIONS, this.options);
-    this.editor = CodeMirror.fromTextArea(this.$refs.textarea, this.currentOptions);
+    var codemirror = require('codemirror');
+    require('codemirror/addon/mode/overlay');
+    require('codemirror/addon/mode/simple');
+    require('codemirror/mode/css/css');
+    require('codemirror/mode/htmlmixed/htmlmixed');
+    require('codemirror/mode/javascript/javascript');
+    require('codemirror/mode/vue/vue');
+    require('codemirror/mode/xml/xml');
+    require('codemirror/mode/jsx/jsx');
+    this.editor = codemirror.fromTextArea(this.$refs.textarea, this.currentOptions);
     this.editor.on('change', this.handleChange);
   },
 
@@ -152,96 +160,6 @@ var parser = function (input) {
   }
 };
 
-var JSMODULE_REG = /\.((js)|(jsx))$/;
-
-function require$1 (url) {
-  if (JSMODULE_REG.test(url)) {
-    return getAndCache(url)
-  }
-}
-
-// modify from docsify: https://github.com/QingWei-Li/docsify/blob/master/src/core/fetch/ajax.js
-
-var cache = {};
-
-/**
- * Simple ajax get
- * @param {string} url
- * @return { then(resolve, reject), abort }
- */
-function getAndCache (url) {
-  var xhr = new XMLHttpRequest(); // eslint-disable-line
-
-  if (cache[url]) {
-    return cache[url]
-  }
-
-  xhr.open('GET', url, false);
-  xhr.send();
-  var script = xhr.responseText;
-  cache[url] = evalJS(script);
-  return cache[url]
-}
-
-window.require = require$1;
-
-function evalJS (script, scope) {
-  if ( scope === void 0 ) scope = {};
-
-  // https://www.npmjs.com/package/babel-standalone
-  /* istanbul ignore next */
-
-  if (typeof Babel !== 'undefined') {
-    var plugins = [];
-
-    // Register jsx plugin
-    if (window['babel-plugin-transform-vue-jsx']) {
-      if (!Babel.availablePlugins['transform-vue-jsx']) { // eslint-disable-line
-        Babel.registerPlugin('transform-vue-jsx', window['babel-plugin-transform-vue-jsx']); // eslint-disable-line
-      }
-      plugins.push('transform-vue-jsx');
-    }
-
-    script =  Babel.transform(script, { // eslint-disable-line
-      presets: [['es2015', { 'loose': true }], 'stage-2'],
-      plugins: plugins,
-      comments: false
-    }).code;
-  }
-
-  var scopeDecl = '';
-  for (var variable in scope) {
-    if (scope.hasOwnProperty(variable)) {
-      scopeDecl += 'var ' + variable + ' = __vuep[\'' + variable + '\'];';
-    }
-  }
-
-  script = "(function(exports){var module={};module.exports=exports;" + scopeDecl + ";" + script + ";return module.exports.__esModule?module.exports.default:module.exports;})({})";
-  var result = new Function('__vuep', 'return ' + script)(scope) || {}; // eslint-disable-line
-  return result
-}
-
-var compiler = function (ref, scope) {
-  var template = ref.template;
-  var script = ref.script; if ( script === void 0 ) script = 'module.exports={}';
-  var styles = ref.styles;
-  if ( scope === void 0 ) scope = {};
-
-  try {
-    if (script === 'module.exports={}' && !template) { throw Error('no data') }
-    var result = evalJS(script, scope);
-    if (template) {
-      result.template = template;
-    }
-    return {
-      result: result,
-      styles: styles && styles.join(' ')
-    }
-  } catch (error) {
-    return { error: error }
-  }
-};
-
 var Vuep$2 = {
   name: 'Vuep',
 
@@ -345,6 +263,7 @@ var Vuep$2 = {
         return
       }
 
+      var compiler = require('../src/utils/compiler.js').default;
       var compiledCode = compiler(result, this.scope);
 
       /* istanbul ignore next */
@@ -373,17 +292,6 @@ Vuep$2.install = install;
 
 if (typeof Vue !== 'undefined') {
   Vue.use(install); // eslint-disable-line
-}
-
-if (typeof require !== 'undefined') {
-  require('codemirror/addon/mode/overlay');
-  require('codemirror/addon/mode/simple');
-  require('codemirror/mode/css/css');
-  require('codemirror/mode/htmlmixed/htmlmixed');
-  require('codemirror/mode/javascript/javascript');
-  require('codemirror/mode/vue/vue');
-  require('codemirror/mode/xml/xml');
-  require('codemirror/mode/jsx/jsx');
 }
 
 module.exports = Vuep$2;
