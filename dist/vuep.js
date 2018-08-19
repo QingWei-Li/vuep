@@ -9379,8 +9379,8 @@ function insertScope (style, scope) {
 }
 
 function getDocumentStyle () {
-  var links = document.querySelectorAll('link');
-  var styles = document.querySelectorAll('styles');
+  var links = document.querySelectorAll('link[rel="stylesheet"]');
+  var styles = document.querySelectorAll('style');
   return Array.from(links).concat(Array.from(styles))
 }
 

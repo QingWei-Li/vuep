@@ -85,7 +85,7 @@ function insertScope (style, scope) {
 }
 
 function getDocumentStyle () {
-  const links = document.querySelectorAll('link')
-  const styles = document.querySelectorAll('styles')
+  const links = document.querySelectorAll('link[rel="stylesheet"]')
+  const styles = document.querySelectorAll('style')
   return Array.from(links).concat(Array.from(styles))
 }
