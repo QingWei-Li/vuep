@@ -62,12 +62,12 @@ var Editor = {
 var Preview = {
   name: 'preview',
 
-  props: ['value', 'styles', 'keepData'],
+  props: ['value', 'styles', 'keepData', 'iframe'],
 
   render: function render (h) {
     this.className = 'vuep-scoped-' + this._uid;
 
-    return h('div', {
+    return h(this.iframe ? 'iframe' : 'div', {
       class: this.className
     }, [
       this.scopedStyle ? h('style', null, this.scopedStyle) : ''
@@ -91,14 +91,24 @@ var Preview = {
       var this$1 = this;
 
       var lastData = this.keepData && this.codeVM && assign({}, this.codeVM.$data);
+      var container = this.iframe ? this.$el.contentDocument.body : this.$el;
 
       if (this.codeVM) {
         this.codeVM.$destroy();
-        this.$el.removeChild(this.codeVM.$el);
+        container.removeChild(this.codeVM.$el);
+      }
+
+      if (this.iframe) {
+        if (this.styleEl) {
+          container.removeChild(this.styleEl);
+        }
+        this.styleEl = document.createElement('style');
+        this.styleEl.appendChild(document.createTextNode(this.styles));
+        container.appendChild(this.styleEl);
       }
 
       this.codeEl = document.createElement('div');
-      this.$el.appendChild(this.codeEl);
+      container.appendChild(this.codeEl);
 
       try {
         var parent = this;
@@ -250,7 +260,8 @@ var Vuep$2 = {
     options: {},
     keepData: Boolean,
     value: String,
-    scope: Object
+    scope: Object,
+    iframe: Boolean
   },
 
   data: function data () {
@@ -278,7 +289,8 @@ var Vuep$2 = {
         props: {
           value: this.preview,
           styles: this.styles,
-          keepData: this.keepData
+          keepData: this.keepData,
+          iframe: this.iframe
         },
         on: {
           error: this.handleError

@@ -11,7 +11,8 @@ export default {
     options: {},
     keepData: Boolean,
     value: String,
-    scope: Object
+    scope: Object,
+    iframe: Boolean
   },
 
   data () {
@@ -37,7 +38,8 @@ export default {
         props: {
           value: this.preview,
           styles: this.styles,
-          keepData: this.keepData
+          keepData: this.keepData,
+          iframe: this.iframe
         },
         on: {
           error: this.handleError
