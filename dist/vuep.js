@@ -9296,12 +9296,12 @@ var Editor = {
 var Preview = {
   name: 'preview',
 
-  props: ['value', 'styles', 'keepData'],
+  props: ['value', 'styles', 'keepData', 'iframe'],
 
   render: function render (h) {
     this.className = 'vuep-scoped-' + this._uid;
 
-    return h('div', {
+    return h(this.iframe ? 'iframe' : 'div', {
       class: this.className
     }, [
       this.scopedStyle ? h('style', null, this.scopedStyle) : ''
@@ -9325,22 +9325,42 @@ var Preview = {
       var this$1 = this;
 
       var lastData = this.keepData && this.codeVM && assign({}, this.codeVM.$data);
+      var container = this.iframe ? this.$el.contentDocument.body : this.$el;
 
       if (this.codeVM) {
         this.codeVM.$destroy();
-        this.$el.removeChild(this.codeVM.$el);
+        container.removeChild(this.codeVM.$el);
       }
 
       this.codeEl = document.createElement('div');
-      this.$el.appendChild(this.codeEl);
+      container.appendChild(this.codeEl);
+
+      if (this.iframe) {
+        var head = this.$el.contentDocument.head;
+        if (this.styleEl) {
+          head.removeChild(this.styleEl);
+          for (var key in this$1.styleNodes) {
+            head.removeChild(this$1.styleNodes[key]);
+          }
+        }
+        this.styleEl = document.createElement('style');
+        this.styleEl.appendChild(document.createTextNode(this.styles));
+        this.styleNodes = [];
+        var documentStyles = getDocumentStyle();
+        for (var key$1 in documentStyles) {
+          this$1.styleNodes[key$1] = documentStyles[key$1].cloneNode(true);
+          head.appendChild(this$1.styleNodes[key$1]);
+        }
+        head.appendChild(this.styleEl);
+      }
 
       try {
         var parent = this;
         this.codeVM = new Vue$1(assign({}, {parent: parent}, val)).$mount(this.codeEl);
 
         if (lastData) {
-          for (var key in lastData) {
-            this$1.codeVM[key] = lastData[key];
+          for (var key$2 in lastData) {
+            this$1.codeVM[key$2] = lastData[key$2];
           }
         }
       } catch (e) {
@@ -9356,6 +9376,12 @@ function insertScope (style, scope) {
   return style.trim().replace(regex, function (m, g1, g2) {
     return g1 ? (g1 + " " + scope + " " + g2) : (scope + " " + g2)
   })
+}
+
+function getDocumentStyle () {
+  var links = document.querySelectorAll('link[rel="stylesheet"]');
+  var styles = document.querySelectorAll('style');
+  return Array.from(links).concat(Array.from(styles))
 }
 
 var parser = function (input) {
@@ -9484,7 +9510,8 @@ var Vuep$1 = {
     options: {},
     keepData: Boolean,
     value: String,
-    scope: Object
+    scope: Object,
+    iframe: Boolean
   },
 
   data: function data () {
@@ -9512,7 +9539,8 @@ var Vuep$1 = {
         props: {
           value: this.preview,
           styles: this.styles,
-          keepData: this.keepData
+          keepData: this.keepData,
+          iframe: this.iframe
         },
         on: {
           error: this.handleError
