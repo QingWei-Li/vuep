@@ -98,25 +98,35 @@ var Preview = {
         container.removeChild(this.codeVM.$el);
       }
 
+      this.codeEl = document.createElement('div');
+      container.appendChild(this.codeEl);
+
       if (this.iframe) {
+        var head = this.$el.contentDocument.head;
         if (this.styleEl) {
-          container.removeChild(this.styleEl);
+          head.removeChild(this.styleEl);
+          for (var key in this$1.styleNodes) {
+            head.removeChild(this$1.styleNodes[key]);
+          }
         }
         this.styleEl = document.createElement('style');
         this.styleEl.appendChild(document.createTextNode(this.styles));
-        container.appendChild(this.styleEl);
+        this.styleNodes = [];
+        var documentStyles = getDocumentStyle();
+        for (var key$1 in documentStyles) {
+          this$1.styleNodes[key$1] = documentStyles[key$1].cloneNode(true);
+          head.appendChild(this$1.styleNodes[key$1]);
+        }
+        head.appendChild(this.styleEl);
       }
-
-      this.codeEl = document.createElement('div');
-      container.appendChild(this.codeEl);
 
       try {
         var parent = this;
         this.codeVM = new Vue$1(assign({}, {parent: parent}, val)).$mount(this.codeEl);
 
         if (lastData) {
-          for (var key in lastData) {
-            this$1.codeVM[key] = lastData[key];
+          for (var key$2 in lastData) {
+            this$1.codeVM[key$2] = lastData[key$2];
           }
         }
       } catch (e) {
@@ -132,6 +142,12 @@ function insertScope (style, scope) {
   return style.trim().replace(regex, function (m, g1, g2) {
     return g1 ? (g1 + " " + scope + " " + g2) : (scope + " " + g2)
   })
+}
+
+function getDocumentStyle () {
+  var links = document.querySelectorAll('link');
+  var styles = document.querySelectorAll('styles');
+  return Array.from(links).concat(Array.from(styles))
 }
 
 var parser = function (input) {

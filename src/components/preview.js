@@ -38,17 +38,27 @@ export default {
         container.removeChild(this.codeVM.$el)
       }
 
+      this.codeEl = document.createElement('div')
+      container.appendChild(this.codeEl)
+
       if (this.iframe) {
+        const head = this.$el.contentDocument.head
         if (this.styleEl) {
-          container.removeChild(this.styleEl)
+          head.removeChild(this.styleEl)
+          for (const key in this.styleNodes) {
+            head.removeChild(this.styleNodes[key])
+          }
         }
         this.styleEl = document.createElement('style')
         this.styleEl.appendChild(document.createTextNode(this.styles))
-        container.appendChild(this.styleEl)
+        this.styleNodes = []
+        const documentStyles = getDocumentStyle()
+        for (const key in documentStyles) {
+          this.styleNodes[key] = documentStyles[key].cloneNode(true)
+          head.appendChild(this.styleNodes[key])
+        }
+        head.appendChild(this.styleEl)
       }
-
-      this.codeEl = document.createElement('div')
-      container.appendChild(this.codeEl)
 
       try {
         const parent = this
@@ -72,4 +82,10 @@ function insertScope (style, scope) {
   return style.trim().replace(regex, (m, g1, g2) => {
     return g1 ? `${g1} ${scope} ${g2}` : `${scope} ${g2}`
   })
+}
+
+function getDocumentStyle () {
+  const links = document.querySelectorAll('link')
+  const styles = document.querySelectorAll('styles')
+  return Array.from(links).concat(Array.from(styles))
 }
