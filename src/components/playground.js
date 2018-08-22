@@ -72,8 +72,11 @@ export default {
   },
 
   created () {
-      /* istanbul ignore next */
+    /* istanbul ignore next */
     if (this.$isServer) return
+  },
+
+  mounted () {
     let content = this.template
 
     if (/^[\.#]/.test(this.template)) {

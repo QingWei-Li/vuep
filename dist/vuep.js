@@ -9573,8 +9573,11 @@ var Vuep$1 = {
   },
 
   created: function created () {
-      /* istanbul ignore next */
+    /* istanbul ignore next */
     if (this.$isServer) { return }
+  },
+
+  mounted: function mounted () {
     var content = this.template;
 
     if (/^[\.#]/.test(this.template)) {
