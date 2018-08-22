@@ -12,7 +12,7 @@ describe('playground', () => {
       propsData: {
         template: '#app'
       }
-    })).toThrowError('#app is not found')
+    }).$mount()).toThrowError('#app is not found')
   })
 
   it('work', () => {

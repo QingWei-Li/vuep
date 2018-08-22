@@ -339,8 +339,11 @@ var Vuep$2 = {
   },
 
   created: function created () {
-      /* istanbul ignore next */
+    /* istanbul ignore next */
     if (this.$isServer) { return }
+  },
+
+  mounted: function mounted () {
     var content = this.template;
 
     if (/^[\.#]/.test(this.template)) {
