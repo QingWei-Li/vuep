@@ -84,26 +84,20 @@ var Preview = {
 
   mounted: function mounted () {
     this.$watch('value', this.renderCode, { immediate: true });
+    if (this.iframe) {
+      this.$el.addEventListener('load', this.renderCode);
+    }
   },
   methods: {
-    handleUnloadedIframe: function handleUnloadedIframe (val) {
-      var this$1 = this;
-
-      var renderCode = function () {
-        this$1.renderCode(val);
-        this$1.$el.removeEventListener('load', renderCode);
-      };
-      this.$el.addEventListener('load', renderCode, false);
-    },
-    renderCode: function renderCode (val) {
+    renderCode: function renderCode () {
       var this$1 = this;
 
       // Firefox needs the iframe to be loaded
       if (this.iframe && this.$el.contentDocument.readyState !== 'complete') {
-        this.handleUnloadedIframe(val);
         return
       }
 
+      var val = this.value;
       var lastData = this.keepData && this.codeVM && assign({}, this.codeVM.$data);
       var container = this.iframe ? this.$el.contentDocument.body : this.$el;
 

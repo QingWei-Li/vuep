@@ -26,22 +26,18 @@ export default {
 
   mounted () {
     this.$watch('value', this.renderCode, { immediate: true })
+    if (this.iframe) {
+      this.$el.addEventListener('load', this.renderCode)
+    }
   },
   methods: {
-    handleUnloadedIframe (val) {
-      const renderCode = () => {
-        this.renderCode(val)
-        this.$el.removeEventListener('load', renderCode)
-      }
-      this.$el.addEventListener('load', renderCode, false)
-    },
-    renderCode (val) {
+    renderCode () {
       // Firefox needs the iframe to be loaded
       if (this.iframe && this.$el.contentDocument.readyState !== 'complete') {
-        this.handleUnloadedIframe(val)
         return
       }
 
+      const val = this.value
       const lastData = this.keepData && this.codeVM && assign({}, this.codeVM.$data)
       const container = this.iframe ? this.$el.contentDocument.body : this.$el
 
