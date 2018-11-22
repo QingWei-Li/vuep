@@ -30,6 +30,11 @@ export default {
       this.$el.addEventListener('load', this.renderCode)
     }
   },
+  beforeDestroy () {
+    if (this.iframe) {
+      this.$el.removeEventListener('load', this.renderCode)
+    }
+  },
   methods: {
     renderCode () {
       // Firefox needs the iframe to be loaded

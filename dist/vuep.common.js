@@ -88,6 +88,11 @@ var Preview = {
       this.$el.addEventListener('load', this.renderCode);
     }
   },
+  beforeDestroy: function beforeDestroy () {
+    if (this.iframe) {
+      this.$el.removeEventListener('load', this.renderCode);
+    }
+  },
   methods: {
     renderCode: function renderCode () {
       var this$1 = this;
