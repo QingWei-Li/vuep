@@ -9318,12 +9318,25 @@ var Preview = {
 
   mounted: function mounted () {
     this.$watch('value', this.renderCode, { immediate: true });
+    if (this.iframe) {
+      this.$el.addEventListener('load', this.renderCode);
+    }
   },
-
+  beforeDestroy: function beforeDestroy () {
+    if (this.iframe) {
+      this.$el.removeEventListener('load', this.renderCode);
+    }
+  },
   methods: {
-    renderCode: function renderCode (val) {
+    renderCode: function renderCode () {
       var this$1 = this;
 
+      // Firefox needs the iframe to be loaded
+      if (this.iframe && this.$el.contentDocument.readyState !== 'complete') {
+        return
+      }
+
+      var val = this.value;
       var lastData = this.keepData && this.codeVM && assign({}, this.codeVM.$data);
       var container = this.iframe ? this.$el.contentDocument.body : this.$el;
 
