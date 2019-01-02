@@ -340,7 +340,7 @@ var Vuep$2 = {
 
     var children = [editor, win];
     if (this.$slots.default) {
-      children = this.addSlots(this.$slots.default, [
+      children = this.addSlots(h, this.$slots.default, [
         {
           name: 'vuep-preview',
           child: win
@@ -383,24 +383,23 @@ var Vuep$2 = {
   },
 
   methods: {
-    addSlots: function addSlots (vnodes, slots) {
+    addSlots: function addSlots (h, vnodes, slots) {
       var this$1 = this;
 
       return vnodes.map(function (vnode) {
-        var found = false;
+        var children = [];
         slots.forEach(function (ref) {
           var name = ref.name;
           var child = ref.child;
 
           if (vnode.data && vnode.data.attrs && vnode.data.attrs[name] !== undefined) {
-            vnode.children = [child];
-            found = true;
+            children = [child];
           }
         });
-        if (!found && vnode.children && vnode.children.length) {
-          vnode.children = this$1.addSlots(vnode.children, slots);
+        if (!children.length && vnode.children && vnode.children.length) {
+          children = this$1.addSlots(h, vnode.children, slots);
         }
-        return vnode
+        return h(vnode.tag, vnode.data, children)
       })
     },
 
