@@ -206,7 +206,7 @@ Vuep can render the code example inside an iframe. This is useful for testing co
 </div>
 ```
 
-Vuep can fit the iframe to it's content by setting `fit-iframe`.
+Vuep can fit the iframe to its content by setting `fit-iframe`.
 
 ```html
 <div id="app">
