@@ -4,7 +4,7 @@ import assign from '../utils/assign' // eslint-disable-line
 export default {
   name: 'preview',
 
-  props: ['value', 'styles', 'keepData', 'iframe'],
+  props: ['value', 'styles', 'keepData', 'iframe', 'fitIframe'],
 
   render (h) {
     this.className = 'vuep-scoped-' + this._uid
@@ -14,6 +14,12 @@ export default {
     }, [
       this.scopedStyle ? h('style', null, this.scopedStyle) : ''
     ])
+  },
+
+  data () {
+    return {
+      resizeDebounce: null
+    }
   },
 
   computed: {
@@ -28,11 +34,13 @@ export default {
     this.$watch('value', this.renderCode, { immediate: true })
     if (this.iframe) {
       this.$el.addEventListener('load', this.renderCode)
+      this.bindIframe()
     }
   },
   beforeDestroy () {
     if (this.iframe) {
       this.$el.removeEventListener('load', this.renderCode)
+      this.unbindIframe()
     }
   },
   methods: {
@@ -86,6 +94,46 @@ export default {
         /* istanbul ignore next */
         this.$emit('error', e)
       }
+
+      if (this.iframe) {
+        this.resizeIframeDebounce()
+      }
+    },
+    bindIframe () {
+      this.$el.contentWindow.addEventListener(
+        'resize',
+        this.resizeIframeDebounce
+      )
+    },
+    unbindIframe () {
+      if (this.$el && this.$el.contentWindow) {
+        this.$el.contentWindow.removeEventListener(
+          'resize',
+          this.resizeIframeDebounce
+        )
+      }
+    },
+    resizeIframeDebounce () {
+      clearTimeout(this.resizeDebounce)
+      this.resizeDebounce = setTimeout(this.resizeIframe, 100)
+    },
+    resizeIframe () {
+      if (!this.fitIframe || !this.$el || !this.$el.contentWindow) {
+        return
+      }
+      this.unbindIframe()
+      const body = this.$el.contentWindow.document.body
+      if (body.children && body.children[0]) {
+        const padding = getPadding(this.$el)
+        const child = body.children[0]
+        const oldOverflow = child.style.overflow
+        child.style.overflow = 'hidden'
+        const childHeight = child.offsetHeight
+        child.style.overflow = oldOverflow
+        const bodyOffset = getPadding(body) + getMargin(body)
+        this.$el.style.height = `${childHeight + padding + bodyOffset}px`
+      }
+      setTimeout(this.bindIframe, 100)
     }
   }
 }
@@ -101,4 +149,16 @@ function getDocumentStyle () {
   const links = document.querySelectorAll('link[rel="stylesheet"]')
   const styles = document.querySelectorAll('style')
   return Array.from(links).concat(Array.from(styles))
+}
+
+function getPadding(e) {
+  return getProperty(e, 'padding-top') + getProperty(e, 'padding-bottom')
+}
+
+function getMargin(e) {
+  return getProperty(e, 'margin-top') + getProperty(e, 'margin-bottom')
+}
+
+function getProperty(e, p) {
+  return parseInt(window.getComputedStyle(e, null).getPropertyValue(p))
 }
