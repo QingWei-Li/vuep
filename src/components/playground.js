@@ -12,7 +12,8 @@ export default {
     keepData: Boolean,
     value: String,
     scope: Object,
-    iframe: Boolean
+    iframe: Boolean,
+    fitIframe: Boolean
   },
 
   data () {
@@ -39,7 +40,8 @@ export default {
           value: this.preview,
           styles: this.styles,
           keepData: this.keepData,
-          iframe: this.iframe
+          iframe: this.iframe,
+          fitIframe: this.fitIframe
         },
         on: {
           error: this.handleError

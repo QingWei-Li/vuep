@@ -33,7 +33,7 @@
     <div id="sfc-scoped-slot">
       <h3>Single File Component with custom layout</h3>
       <button @click="editor = !editor">toggle editor</button>
-      <vuep v-model="value">
+      <vuep v-model="value" iframe fit-iframe>
         <div class="custom-layout">
           <div class="custom-preview" vuep-preview></div>
           <div class="custom-editor" vuep-editor v-show="editor"></div>
