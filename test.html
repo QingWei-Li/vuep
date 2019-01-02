@@ -32,10 +32,11 @@
 
     <div id="sfc-scoped-slot">
       <h3>Single File Component with custom layout</h3>
+      <button @click="editor = !editor">toggle editor</button>
       <vuep v-model="value">
         <div class="custom-layout">
           <div class="custom-preview" vuep-preview></div>
-          <div class="custom-editor" vuep-editor></div>
+          <div class="custom-editor" vuep-editor v-show="editor"></div>
         </div>
       </vuep>
     </div>
@@ -277,6 +278,7 @@
     el: '#sfc-scoped-slot',
     data: function () {
       return {
+        editor: true,
         scope: { Features },
         value: `
 <style>
