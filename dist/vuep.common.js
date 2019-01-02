@@ -62,7 +62,7 @@ var Editor = {
 var Preview = {
   name: 'preview',
 
-  props: ['value', 'styles', 'keepData', 'iframe'],
+  props: ['value', 'styles', 'keepData', 'iframe', 'fitIframe'],
 
   render: function render (h) {
     this.className = 'vuep-scoped-' + this._uid;
@@ -72,6 +72,12 @@ var Preview = {
     }, [
       this.scopedStyle ? h('style', null, this.scopedStyle) : ''
     ])
+  },
+
+  data: function data () {
+    return {
+      resizeDebounce: null
+    }
   },
 
   computed: {
@@ -86,11 +92,13 @@ var Preview = {
     this.$watch('value', this.renderCode, { immediate: true });
     if (this.iframe) {
       this.$el.addEventListener('load', this.renderCode);
+      this.bindIframe();
     }
   },
   beforeDestroy: function beforeDestroy () {
     if (this.iframe) {
       this.$el.removeEventListener('load', this.renderCode);
+      this.unbindIframe();
     }
   },
   methods: {
@@ -146,6 +154,46 @@ var Preview = {
         /* istanbul ignore next */
         this.$emit('error', e);
       }
+
+      if (this.iframe) {
+        this.resizeIframeDebounce();
+      }
+    },
+    bindIframe: function bindIframe () {
+      this.$el.contentWindow.addEventListener(
+        'resize',
+        this.resizeIframeDebounce
+      );
+    },
+    unbindIframe: function unbindIframe () {
+      if (this.$el && this.$el.contentWindow) {
+        this.$el.contentWindow.removeEventListener(
+          'resize',
+          this.resizeIframeDebounce
+        );
+      }
+    },
+    resizeIframeDebounce: function resizeIframeDebounce () {
+      clearTimeout(this.resizeDebounce);
+      this.resizeDebounce = setTimeout(this.resizeIframe, 100);
+    },
+    resizeIframe: function resizeIframe () {
+      if (!this.fitIframe || !this.$el || !this.$el.contentWindow) {
+        return
+      }
+      this.unbindIframe();
+      var body = this.$el.contentWindow.document.body;
+      if (body.children && body.children[0]) {
+        var padding = getPadding(this.$el);
+        var child = body.children[0];
+        var oldOverflow = child.style.overflow;
+        child.style.overflow = 'hidden';
+        var childHeight = child.offsetHeight;
+        child.style.overflow = oldOverflow;
+        var bodyOffset = getPadding(body) + getMargin(body);
+        this.$el.style.height = (childHeight + padding + bodyOffset) + "px";
+      }
+      setTimeout(this.bindIframe, 100);
     }
   }
 };
@@ -161,6 +209,18 @@ function getDocumentStyle () {
   var links = document.querySelectorAll('link[rel="stylesheet"]');
   var styles = document.querySelectorAll('style');
   return Array.from(links).concat(Array.from(styles))
+}
+
+function getPadding(e) {
+  return getProperty(e, 'padding-top') + getProperty(e, 'padding-bottom')
+}
+
+function getMargin(e) {
+  return getProperty(e, 'margin-top') + getProperty(e, 'margin-bottom')
+}
+
+function getProperty(e, p) {
+  return parseInt(window.getComputedStyle(e, null).getPropertyValue(p))
 }
 
 var parser = function (input) {
@@ -290,7 +350,8 @@ var Vuep$2 = {
     keepData: Boolean,
     value: String,
     scope: Object,
-    iframe: Boolean
+    iframe: Boolean,
+    fitIframe: Boolean
   },
 
   data: function data () {
@@ -319,7 +380,8 @@ var Vuep$2 = {
           value: this.preview,
           styles: this.styles,
           keepData: this.keepData,
-          iframe: this.iframe
+          iframe: this.iframe,
+          fitIframe: this.fitIframe
         },
         on: {
           error: this.handleError
