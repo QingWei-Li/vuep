@@ -29,6 +29,29 @@
       <h3>Single File Component displayed in iframe</h3>
       <vuep v-model="value" iframe></vuep>
     </div>
+
+    <div id="sfc-scoped-slot">
+      <h3>Single File Component with custom layout</h3>
+      <vuep v-model="value">
+        <div class="custom-layout">
+          <div class="custom-preview" vuep-preview></div>
+          <div class="custom-editor" vuep-editor></div>
+        </div>
+      </vuep>
+    </div>
+    <style>
+      .custom-layout {
+        width: 100%;
+      }
+      .custom-editor {
+        height: 300px;
+        overflow: auto;
+      }
+      .custom-layout .vuep-preview,
+      .custom-layout .vuep-editor {
+        width: 100%;
+      }
+    </style>
   </div>
 
 <script v-pre type="text/x-template" id="example">
@@ -195,6 +218,63 @@
 
   new Vue({
     el: '#sfc-iframe',
+    data: function () {
+      return {
+        scope: { Features },
+        value: `
+<style>
+  .main {
+    color: #2c3e50;
+  }
+  .text {
+    color: #4fc08d;
+  }
+</style>
+
+<template>
+  <div class="main">
+    <h2> Welcome to <span class="text">{{ name }}</span>!</h2>
+    <features :features="features"></features>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {
+      Features
+    },
+    data () {
+      return {
+        name: 'Vuep',
+        features: [
+          'Single File Component',
+          'Babel for ES6/JSX/UMD/CommonJS',
+          'Scoped style',
+          'Customizable JavaScript scope'
+        ]
+      }
+    }
+  }<\/script>`
+      }
+    }
+  })
+</script>
+
+<script>
+  var Features = {
+    props: {
+      features: Array
+    },
+    template: `<div class="features">
+  <h3>Features</h3>
+  <ul>
+    <li v-for="feature in features">{{ feature }}</li>
+  </ul>
+</div>`
+  }
+
+  new Vue({
+    el: '#sfc-scoped-slot',
     data: function () {
       return {
         scope: { Features },

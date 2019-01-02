@@ -327,19 +327,31 @@ var Vuep$2 = {
       });
     }
 
-    return h('div', { class: 'vuep' }, [
-      h(Editor, {
-        class: 'vuep-editor',
-        props: {
-          value: this.content,
-          options: this.options
+    var editor = h(Editor, {
+      class: 'vuep-editor',
+      props: {
+        value: this.content,
+        options: this.options
+      },
+      on: {
+        change: [this.executeCode, function (val) { return this$1.$emit('input', val); }]
+      }
+    });
+
+    var children = [editor, win];
+    if (this.$slots.default) {
+      children = this.addSlots(this.$slots.default, [
+        {
+          name: 'vuep-preview',
+          child: win
         },
-        on: {
-          change: [this.executeCode, function (val) { return this$1.$emit('input', val); }]
+        {
+          name: 'vuep-editor',
+          child: editor
         }
-      }),
-      win
-    ])
+      ]);
+    }
+    return h('div', { class: 'vuep' }, children)
   },
 
   watch: {
@@ -371,6 +383,27 @@ var Vuep$2 = {
   },
 
   methods: {
+    addSlots: function addSlots (vnodes, slots) {
+      var this$1 = this;
+
+      return vnodes.map(function (vnode) {
+        var found = false;
+        slots.forEach(function (ref) {
+          var name = ref.name;
+          var child = ref.child;
+
+          if (vnode.data && vnode.data.attrs && vnode.data.attrs[name] !== undefined) {
+            vnode.children = [child];
+            found = true;
+          }
+        });
+        if (!found && vnode.children && vnode.children.length) {
+          vnode.children = this$1.addSlots(vnode.children, slots);
+        }
+        return vnode
+      })
+    },
+
     handleError: function handleError (err) {
       /* istanbul ignore next */
       this.error = err;

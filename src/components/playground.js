@@ -47,19 +47,31 @@ export default {
       })
     }
 
-    return h('div', { class: 'vuep' }, [
-      h(Editor, {
-        class: 'vuep-editor',
-        props: {
-          value: this.content,
-          options: this.options
+    const editor = h(Editor, {
+      class: 'vuep-editor',
+      props: {
+        value: this.content,
+        options: this.options
+      },
+      on: {
+        change: [this.executeCode, val => this.$emit('input', val)]
+      }
+    })
+
+    let children = [editor, win]
+    if (this.$slots.default) {
+      children = this.addSlots(this.$slots.default, [
+        {
+          name: 'vuep-preview',
+          child: win
         },
-        on: {
-          change: [this.executeCode, val => this.$emit('input', val)]
+        {
+          name: 'vuep-editor',
+          child: editor
         }
-      }),
-      win
-    ])
+      ])
+    }
+    return h('div', { class: 'vuep' }, children)
   },
 
   watch: {
@@ -91,6 +103,22 @@ export default {
   },
 
   methods: {
+    addSlots (vnodes, slots) {
+      return vnodes.map(vnode => {
+        let found = false
+        slots.forEach(({ name, child }) => {
+          if (vnode.data && vnode.data.attrs && vnode.data.attrs[name] !== undefined) {
+            vnode.children = [child]
+            found = true
+          }
+        })
+        if (!found && vnode.children && vnode.children.length) {
+          vnode.children = this.addSlots(vnode.children, slots)
+        }
+        return vnode
+      })
+    },
+
     handleError (err) {
       /* istanbul ignore next */
       this.error = err
