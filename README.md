@@ -14,7 +14,7 @@
 ## Links
 
 - Docs: https://cinwell.com/vuep/
-- An online playgound: https://vuep.run
+- An online playgound: https://vuep.netlify.com
 
 
 
