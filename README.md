@@ -111,7 +111,6 @@ you can write in HTML file or even a markdown file.
 </script>
 ```
 
-
 ### Scope
 
 You can customize scope by passing an object to the scope property. 
@@ -176,6 +175,34 @@ new Vue({
 ```html
 <div id="app">
   <vuep :value="value" :scope="scope"></vuep>
+</div>
+```
+
+### Custom layout
+
+You can provide a custom layout for vuep to render the editor and preview in.
+Add a div with the attribute `vuep-preview` and one with `vuep-editor` so vuep knows where to render these components.
+
+```html
+<div id="app">
+  <vuep :value="value">
+    <div class="custom-layout">
+      <h2>My custom preview</h2>
+      <div class="custom-preview" vuep-preview></div>
+      <h2>My custom editor</h2>
+      <div class="custom-editor" vuep-editor></div>
+    </div>
+  </vuep>
+</div>
+```
+
+### Code example iframe
+
+Vuep can render the code example inside an iframe. This is useful for testing components with elements set to `position: fixed`.
+
+```html
+<div id="app">
+  <vuep :value="value" iframe></vuep>
 </div>
 ```
 
