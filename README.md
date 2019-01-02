@@ -206,6 +206,14 @@ Vuep can render the code example inside an iframe. This is useful for testing co
 </div>
 ```
 
+Vuep can fit the iframe to it's content by setting `fit-iframe`.
+
+```html
+<div id="app">
+  <vuep :value="value" iframe fit-iframe></vuep>
+</div>
+```
+
 ## Inspired
 
 - https://facebook.github.io/react/
