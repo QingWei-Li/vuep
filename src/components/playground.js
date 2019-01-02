@@ -62,7 +62,7 @@ export default {
 
     let children = [editor, win]
     if (this.$slots.default) {
-      children = this.addSlots(this.$slots.default, [
+      children = this.addSlots(h, this.$slots.default, [
         {
           name: 'vuep-preview',
           child: win
@@ -105,19 +105,18 @@ export default {
   },
 
   methods: {
-    addSlots (vnodes, slots) {
+    addSlots (h, vnodes, slots) {
       return vnodes.map(vnode => {
-        let found = false
+        let children = []
         slots.forEach(({ name, child }) => {
           if (vnode.data && vnode.data.attrs && vnode.data.attrs[name] !== undefined) {
-            vnode.children = [child]
-            found = true
+            children = [child]
           }
         })
-        if (!found && vnode.children && vnode.children.length) {
-          vnode.children = this.addSlots(vnode.children, slots)
+        if (!children.length && vnode.children && vnode.children.length) {
+          children = this.addSlots(h, vnode.children, slots)
         }
-        return vnode
+        return h(vnode.tag, vnode.data, children)
       })
     },
 
