@@ -5,7 +5,7 @@ import IframeResizer from '../utils/iframeResizer'
 export default {
   name: 'preview',
 
-  props: ['value', 'styles', 'keepData', 'iframe', 'fitIframe'],
+  props: ['value', 'styles', 'keepData', 'iframe', 'fitIframe', 'iframeClass'],
 
   render (h) {
     this.className = 'vuep-scoped-' + this._uid
@@ -88,6 +88,7 @@ export default {
       container.appendChild(this.codeEl)
 
       if (this.iframe) {
+        container.classList.add(this.iframeClass)
         const head = this.$el.contentDocument.head
         if (this.styleEl) {
           head.removeChild(this.styleEl)

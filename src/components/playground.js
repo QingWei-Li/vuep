@@ -13,7 +13,11 @@ export default {
     value: String,
     scope: Object,
     iframe: Boolean,
-    fitIframe: Boolean
+    fitIframe: Boolean,
+    iframeClass: {
+      type: String,
+      default: 'vuep-iframe-preview'
+    }
   },
 
   data () {
@@ -41,7 +45,8 @@ export default {
           styles: this.styles,
           keepData: this.keepData,
           iframe: this.iframe,
-          fitIframe: this.fitIframe
+          fitIframe: this.fitIframe,
+          iframeClass: this.iframeClass
         },
         on: {
           error: this.handleError

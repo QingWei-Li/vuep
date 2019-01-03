@@ -9392,7 +9392,7 @@ function getProperty (e, p) {
 var Preview = {
   name: 'preview',
 
-  props: ['value', 'styles', 'keepData', 'iframe', 'fitIframe'],
+  props: ['value', 'styles', 'keepData', 'iframe', 'fitIframe', 'iframeClass'],
 
   render: function render (h) {
     this.className = 'vuep-scoped-' + this._uid;
@@ -9479,6 +9479,7 @@ var Preview = {
       container.appendChild(this.codeEl);
 
       if (this.iframe) {
+        container.classList.add(this.iframeClass);
         var head = this.$el.contentDocument.head;
         if (this.styleEl) {
           head.removeChild(this.styleEl);
@@ -9655,7 +9656,11 @@ var Vuep$1 = {
     value: String,
     scope: Object,
     iframe: Boolean,
-    fitIframe: Boolean
+    fitIframe: Boolean,
+    iframeClass: {
+      type: String,
+      default: 'vuep-iframe-preview'
+    }
   },
 
   data: function data () {
@@ -9685,7 +9690,8 @@ var Vuep$1 = {
           styles: this.styles,
           keepData: this.keepData,
           iframe: this.iframe,
-          fitIframe: this.fitIframe
+          fitIframe: this.fitIframe,
+          iframeClass: this.iframeClass
         },
         on: {
           error: this.handleError
