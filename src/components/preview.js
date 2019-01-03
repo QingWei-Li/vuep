@@ -1,5 +1,6 @@
 import Vue from 'vue/dist/vue.common'
 import assign from '../utils/assign' // eslint-disable-line
+import IframeResizer from '../utils/iframeResizer'
 
 export default {
   name: 'preview',
@@ -18,7 +19,7 @@ export default {
 
   data () {
     return {
-      iframeObserver: null
+      resizer: null
     }
   },
 
@@ -39,6 +40,9 @@ export default {
       } else {
         this.$el.addEventListener('load', this.initIframe)
       }
+      this.$watch('fitIframe', (fitIframe) => {
+        fitIframe ? this.startResizer() : this.stopResizer()
+      }, { immediate: true })
     }
   },
   beforeDestroy () {
@@ -48,6 +52,23 @@ export default {
     }
   },
   methods: {
+    initIframe () {
+      this.resizer = new IframeResizer(this.$el)
+      this.renderCode()
+    },
+    cleanupIframe () {
+      this.stopResizer()
+    },
+    startResizer () {
+      if (this.resizer) {
+        this.resizer.start()
+      }
+    },
+    stopResizer () {
+      if (this.resizer) {
+        this.resizer.stop()
+      }
+    },
     renderCode () {
       // Firefox needs the iframe to be loaded
       if (this.iframe && this.$el.contentDocument.readyState !== 'complete') {
@@ -98,63 +119,6 @@ export default {
         /* istanbul ignore next */
         this.$emit('error', e)
       }
-    },
-    initIframe () {
-      this.bindIframeResizeObserver()
-      this.bindIframeContentObserver()
-      this.renderCode()
-    },
-    cleanupIframe () {
-      this.unbindIframeResizeObserver()
-      this.unbindIframeContentObserver()
-    },
-    bindIframeResizeObserver () {
-      this.$el.contentWindow.addEventListener(
-        'resize',
-        this.resizeIframe
-      )
-    },
-    unbindIframeResizeObserver () {
-      if (this.$el && this.$el.contentWindow) {
-        this.$el.contentWindow.removeEventListener(
-          'resize',
-          this.resizeIframe
-        )
-      }
-    },
-    bindIframeContentObserver () {
-      const MutationObserver = window.MutationObserver || window.WebKitMutationObserver
-      if (MutationObserver) {
-        const target = this.$el.contentWindow.document.body
-        const config = {
-          attributes: true,
-          attributeOldValue: false,
-          characterData: true,
-          characterDataOldValue: false,
-          childList: true,
-          subtree: true
-        }
-        this.iframeObserver = new MutationObserver(this.resizeIframe)
-        this.iframeObserver.observe(target, config)
-      }
-    },
-    unbindIframeContentObserver () {
-      this.iframeObserver.disconnect()
-    },
-    resizeIframe () {
-      if (!this.fitIframe || !this.$el || !this.$el.contentWindow) {
-        return
-      }
-      this.unbindIframeResizeObserver()
-      const body = this.$el.contentWindow.document.body
-      if (body.children && body.children[0]) {
-        const padding = getPadding(this.$el)
-        const child = body.children[0]
-        const childHeight = child.offsetHeight
-        const bodyOffset = getPadding(body) + getMargin(body)
-        this.$el.style.height = `${childHeight + padding + bodyOffset}px`
-      }
-      setTimeout(this.bindIframeResizeObserver, 100)
     }
   }
 }
@@ -170,16 +134,4 @@ function getDocumentStyle () {
   const links = document.querySelectorAll('link[rel="stylesheet"]')
   const styles = document.querySelectorAll('style')
   return Array.from(links).concat(Array.from(styles))
-}
-
-function getPadding (e) {
-  return getProperty(e, 'padding-top') + getProperty(e, 'padding-bottom')
-}
-
-function getMargin (e) {
-  return getProperty(e, 'margin-top') + getProperty(e, 'margin-bottom')
-}
-
-function getProperty (e, p) {
-  return parseInt(window.getComputedStyle(e, null).getPropertyValue(p))
 }

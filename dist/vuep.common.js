@@ -59,6 +59,95 @@ var Editor = {
   }
 };
 
+var IframeResizer = function IframeResizer ($el) {
+  this.$el = $el;
+  this.observer = null;
+  this.resize = this.resizeIframe.bind(this);
+};
+
+IframeResizer.prototype.start = function start () {
+  this.resize();
+  this.bindResizeObserver();
+  this.bindContentObserver();
+};
+
+IframeResizer.prototype.stop = function stop () {
+  this.unbindResizeObserver();
+  this.unbindContentObserver();
+};
+
+IframeResizer.prototype.resizeIframe = function resizeIframe () {
+  if (!this.$el || !this.$el.contentWindow) {
+    return
+  }
+  this.stop();
+  var body = this.$el.contentWindow.document.body;
+  // Add element for height calculation
+  var heightEl = document.createElement('div');
+  body.appendChild(heightEl);
+  var padding = getPadding(this.$el);
+  var bodyOffset = getPadding(body) + getMargin(body);
+  this.$el.style.height = (heightEl.offsetTop + padding + bodyOffset) + "px";
+  body.removeChild(heightEl);
+  setTimeout(this.start.bind(this), 100);
+};
+
+IframeResizer.prototype.bindResizeObserver = function bindResizeObserver () {
+  if (this.$el && this.$el.contentWindow) {
+    this.$el.contentWindow.addEventListener(
+      'resize',
+      this.resize
+    );
+  }
+};
+
+IframeResizer.prototype.unbindResizeObserver = function unbindResizeObserver () {
+  if (this.$el && this.$el.contentWindow) {
+    this.$el.contentWindow.removeEventListener(
+      'resize',
+      this.resize
+    );
+  }
+};
+
+IframeResizer.prototype.bindContentObserver = function bindContentObserver () {
+  if (!this.$el || !this.$el.contentWindow) {
+    return
+  }
+  var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+  if (MutationObserver) {
+    var target = this.$el.contentWindow.document.body;
+    var config = {
+      attributes: true,
+      attributeOldValue: false,
+      characterData: true,
+      characterDataOldValue: false,
+      childList: true,
+      subtree: true
+    };
+    this.observer = new MutationObserver(this.resize);
+    this.observer.observe(target, config);
+  }
+};
+
+IframeResizer.prototype.unbindContentObserver = function unbindContentObserver () {
+  if (this.observer) {
+    this.observer.disconnect();
+  }
+};
+
+function getPadding (e) {
+  return getProperty(e, 'padding-top') + getProperty(e, 'padding-bottom')
+}
+
+function getMargin (e) {
+  return getProperty(e, 'margin-top') + getProperty(e, 'margin-bottom')
+}
+
+function getProperty (e, p) {
+  return parseInt(window.getComputedStyle(e, null).getPropertyValue(p))
+}
+
 var Preview = {
   name: 'preview',
 
@@ -76,7 +165,7 @@ var Preview = {
 
   data: function data () {
     return {
-      iframeObserver: null
+      resizer: null
     }
   },
 
@@ -89,20 +178,45 @@ var Preview = {
   },
 
   mounted: function mounted () {
+    var this$1 = this;
+
     this.$watch('value', this.renderCode, { immediate: true });
     if (this.iframe) {
-      this.$el.addEventListener('load', this.renderCode);
-      this.bindIframe();
-      this.resizeIframe();
+      // Firefox needs the iframe to be loaded
+      if (this.$el.contentDocument.readyState === 'complete') {
+        this.initIframe();
+      } else {
+        this.$el.addEventListener('load', this.initIframe);
+      }
+      this.$watch('fitIframe', function (fitIframe) {
+        fitIframe ? this$1.startResizer() : this$1.stopResizer();
+      }, { immediate: true });
     }
   },
   beforeDestroy: function beforeDestroy () {
     if (this.iframe) {
-      this.$el.removeEventListener('load', this.renderCode);
-      this.unbindIframe();
+      this.$el.removeEventListener('load', this.initIframe);
+      this.cleanupIframe();
     }
   },
   methods: {
+    initIframe: function initIframe () {
+      this.resizer = new IframeResizer(this.$el);
+      this.renderCode();
+    },
+    cleanupIframe: function cleanupIframe () {
+      this.stopResizer();
+    },
+    startResizer: function startResizer () {
+      if (this.resizer) {
+        this.resizer.start();
+      }
+    },
+    stopResizer: function stopResizer () {
+      if (this.resizer) {
+        this.resizer.stop();
+      }
+    },
     renderCode: function renderCode () {
       var this$1 = this;
 
@@ -155,53 +269,6 @@ var Preview = {
         /* istanbul ignore next */
         this.$emit('error', e);
       }
-    },
-    bindIframe: function bindIframe () {
-      this.$el.contentWindow.addEventListener(
-        'resize',
-        this.resizeIframe
-      );
-      var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-      if (MutationObserver) {
-        var target = this.$el.contentWindow.document.body;
-        var config = {
-          attributes: true,
-          attributeOldValue: false,
-          characterData: true,
-          characterDataOldValue: false,
-          childList: true,
-          subtree: true
-        };
-        this.iframeObserver = new MutationObserver(this.resizeIframe);
-        this.iframeObserver.observe(target, config);
-      }
-    },
-    unbindIframe: function unbindIframe () {
-      if (this.$el && this.$el.contentWindow) {
-        this.$el.contentWindow.removeEventListener(
-          'resize',
-          this.resizeIframe
-        );
-      }
-      this.iframeObserver.disconnect();
-    },
-    resizeIframe: function resizeIframe () {
-      if (!this.fitIframe || !this.$el || !this.$el.contentWindow) {
-        return
-      }
-      this.unbindIframe();
-      var body = this.$el.contentWindow.document.body;
-      if (body.children && body.children[0]) {
-        var padding = getPadding(this.$el);
-        var child = body.children[0];
-        var oldOverflow = child.style.overflow;
-        child.style.overflow = 'hidden';
-        var childHeight = child.offsetHeight;
-        child.style.overflow = oldOverflow;
-        var bodyOffset = getPadding(body) + getMargin(body);
-        this.$el.style.height = (childHeight + padding + bodyOffset) + "px";
-      }
-      setTimeout(this.bindIframe, 100);
     }
   }
 };
@@ -217,18 +284,6 @@ function getDocumentStyle () {
   var links = document.querySelectorAll('link[rel="stylesheet"]');
   var styles = document.querySelectorAll('style');
   return Array.from(links).concat(Array.from(styles))
-}
-
-function getPadding (e) {
-  return getProperty(e, 'padding-top') + getProperty(e, 'padding-bottom')
-}
-
-function getMargin (e) {
-  return getProperty(e, 'margin-top') + getProperty(e, 'margin-bottom')
-}
-
-function getProperty (e, p) {
-  return parseInt(window.getComputedStyle(e, null).getPropertyValue(p))
 }
 
 var parser = function (input) {
