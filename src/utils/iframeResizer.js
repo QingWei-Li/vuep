@@ -7,11 +7,18 @@ export default class IframeResizer {
 
   start () {
     this.resize()
+  }
+
+  stop () {
+    this.stopObserve()
+  }
+
+  observe () {
     this.bindResizeObserver()
     this.bindContentObserver()
   }
 
-  stop () {
+  stopObserve () {
     this.unbindResizeObserver()
     this.unbindContentObserver()
   }
@@ -20,7 +27,7 @@ export default class IframeResizer {
     if (!this.$el || !this.$el.contentWindow) {
       return
     }
-    this.stop()
+    this.stopObserve()
     const body = this.$el.contentWindow.document.body
     // Add element for height calculation
     const heightEl = document.createElement('div')
@@ -29,7 +36,7 @@ export default class IframeResizer {
     const bodyOffset = getPadding(body) + getMargin(body)
     this.$el.style.height = `${heightEl.offsetTop + padding + bodyOffset}px`
     body.removeChild(heightEl)
-    setTimeout(this.start.bind(this), 100)
+    setTimeout(this.observe.bind(this), 100)
   }
 
   bindResizeObserver () {

@@ -9301,11 +9301,18 @@ var IframeResizer = function IframeResizer ($el) {
 
 IframeResizer.prototype.start = function start () {
   this.resize();
+};
+
+IframeResizer.prototype.stop = function stop () {
+  this.stopObserve();
+};
+
+IframeResizer.prototype.observe = function observe () {
   this.bindResizeObserver();
   this.bindContentObserver();
 };
 
-IframeResizer.prototype.stop = function stop () {
+IframeResizer.prototype.stopObserve = function stopObserve () {
   this.unbindResizeObserver();
   this.unbindContentObserver();
 };
@@ -9314,7 +9321,7 @@ IframeResizer.prototype.resizeIframe = function resizeIframe () {
   if (!this.$el || !this.$el.contentWindow) {
     return
   }
-  this.stop();
+  this.stopObserve();
   var body = this.$el.contentWindow.document.body;
   // Add element for height calculation
   var heightEl = document.createElement('div');
@@ -9323,7 +9330,7 @@ IframeResizer.prototype.resizeIframe = function resizeIframe () {
   var bodyOffset = getPadding(body) + getMargin(body);
   this.$el.style.height = (heightEl.offsetTop + padding + bodyOffset) + "px";
   body.removeChild(heightEl);
-  setTimeout(this.start.bind(this), 100);
+  setTimeout(this.observe.bind(this), 100);
 };
 
 IframeResizer.prototype.bindResizeObserver = function bindResizeObserver () {
