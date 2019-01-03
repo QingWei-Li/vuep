@@ -76,7 +76,7 @@ var Preview = {
 
   data: function data () {
     return {
-      resizeDebounce: null
+      iframeObserver: null
     }
   },
 
@@ -93,6 +93,7 @@ var Preview = {
     if (this.iframe) {
       this.$el.addEventListener('load', this.renderCode);
       this.bindIframe();
+      this.resizeIframe();
     }
   },
   beforeDestroy: function beforeDestroy () {
@@ -154,28 +155,35 @@ var Preview = {
         /* istanbul ignore next */
         this.$emit('error', e);
       }
-
-      if (this.iframe) {
-        this.resizeIframeDebounce();
-      }
     },
     bindIframe: function bindIframe () {
       this.$el.contentWindow.addEventListener(
         'resize',
-        this.resizeIframeDebounce
+        this.resizeIframe
       );
+      var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+      if (MutationObserver) {
+        var target = this.$el.contentWindow.document.body;
+        var config = {
+          attributes: true,
+          attributeOldValue: false,
+          characterData: true,
+          characterDataOldValue: false,
+          childList: true,
+          subtree: true
+        };
+        this.iframeObserver = new MutationObserver(this.resizeIframe);
+        this.iframeObserver.observe(target, config);
+      }
     },
     unbindIframe: function unbindIframe () {
       if (this.$el && this.$el.contentWindow) {
         this.$el.contentWindow.removeEventListener(
           'resize',
-          this.resizeIframeDebounce
+          this.resizeIframe
         );
       }
-    },
-    resizeIframeDebounce: function resizeIframeDebounce () {
-      clearTimeout(this.resizeDebounce);
-      this.resizeDebounce = setTimeout(this.resizeIframe, 100);
+      this.iframeObserver.disconnect();
     },
     resizeIframe: function resizeIframe () {
       if (!this.fitIframe || !this.$el || !this.$el.contentWindow) {
@@ -211,15 +219,15 @@ function getDocumentStyle () {
   return Array.from(links).concat(Array.from(styles))
 }
 
-function getPadding(e) {
+function getPadding (e) {
   return getProperty(e, 'padding-top') + getProperty(e, 'padding-bottom')
 }
 
-function getMargin(e) {
+function getMargin (e) {
   return getProperty(e, 'margin-top') + getProperty(e, 'margin-bottom')
 }
 
-function getProperty(e, p) {
+function getProperty (e, p) {
   return parseInt(window.getComputedStyle(e, null).getPropertyValue(p))
 }
 
