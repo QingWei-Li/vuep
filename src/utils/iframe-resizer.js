@@ -15,11 +15,13 @@ export default class IframeResizer {
 
   observe () {
     this.bindResizeObserver()
+    this.bindLoadObserver()
     this.bindContentObserver()
   }
 
   stopObserve () {
     this.unbindResizeObserver()
+    this.unbindLoadObserver()
     this.unbindContentObserver()
   }
 
@@ -52,6 +54,26 @@ export default class IframeResizer {
     if (this.$el && this.$el.contentWindow) {
       this.$el.contentWindow.removeEventListener(
         'resize',
+        this.resize
+      )
+    }
+  }
+
+  // Listen for async loaded content (images)
+  bindLoadObserver () {
+    if (this.$el && this.$el.contentWindow) {
+      this.$el.contentWindow.document.body.addEventListener(
+        'load',
+        this.resize,
+        true
+      )
+    }
+  }
+
+  unbindLoadObserver () {
+    if (this.$el && this.$el.contentWindow) {
+      this.$el.contentWindow.document.body.removeEventListener(
+        'load',
         this.resize
       )
     }

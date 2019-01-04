@@ -9309,11 +9309,13 @@ IframeResizer.prototype.stop = function stop () {
 
 IframeResizer.prototype.observe = function observe () {
   this.bindResizeObserver();
+  this.bindLoadObserver();
   this.bindContentObserver();
 };
 
 IframeResizer.prototype.stopObserve = function stopObserve () {
   this.unbindResizeObserver();
+  this.unbindLoadObserver();
   this.unbindContentObserver();
 };
 
@@ -9346,6 +9348,26 @@ IframeResizer.prototype.unbindResizeObserver = function unbindResizeObserver () 
   if (this.$el && this.$el.contentWindow) {
     this.$el.contentWindow.removeEventListener(
       'resize',
+      this.resize
+    );
+  }
+};
+
+// Listen for async loaded content (images)
+IframeResizer.prototype.bindLoadObserver = function bindLoadObserver () {
+  if (this.$el && this.$el.contentWindow) {
+    this.$el.contentWindow.document.body.addEventListener(
+      'load',
+      this.resize,
+      true
+    );
+  }
+};
+
+IframeResizer.prototype.unbindLoadObserver = function unbindLoadObserver () {
+  if (this.$el && this.$el.contentWindow) {
+    this.$el.contentWindow.document.body.removeEventListener(
+      'load',
       this.resize
     );
   }
