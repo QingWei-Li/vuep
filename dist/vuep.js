@@ -9389,6 +9389,77 @@ function getProperty (e, p) {
   return parseInt(window.getComputedStyle(e, null).getPropertyValue(p))
 }
 
+var IframeStyler = function IframeStyler ($el) {
+  this.$el = $el;
+  this.observer = null;
+  this.style = this.styleIframe.bind(this);
+  this.styleEl = null;
+  this.styleNodes = [];
+  this.styles = null;
+};
+
+IframeStyler.prototype.start = function start () {
+  this.observe();
+  this.style();
+};
+
+IframeStyler.prototype.stop = function stop () {
+  this.stopObserve();
+};
+
+IframeStyler.prototype.setStyles = function setStyles (styles) {
+  this.styles = styles;
+  this.style();
+};
+
+IframeStyler.prototype.observe = function observe () {
+  var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+  if (MutationObserver) {
+    var head = document.querySelector('head');
+    var config = { attributes: true, childList: true, subtree: true };
+    this.observer = new MutationObserver(this.style);
+    this.observer.observe(head, config);
+  }
+};
+
+IframeStyler.prototype.stopObserve = function stopObserve () {
+  if (this.observer) {
+    this.observer.disconnect();
+  }
+};
+
+IframeStyler.prototype.styleIframe = function styleIframe () {
+    var this$1 = this;
+
+  if (!this.$el || !this.$el.contentDocument) {
+    return
+  }
+  var head = this.$el.contentDocument.head;
+  // Remove old styles
+  if (this.styleEl) {
+    head.removeChild(this.styleEl);
+  }
+  for (var key in this$1.styleNodes) {
+    head.removeChild(this$1.styleNodes[key]);
+  }
+  // Set new styles
+  this.styleEl = document.createElement('style');
+  this.styleEl.appendChild(document.createTextNode(this.styles));
+  this.styleNodes = [];
+  var documentStyles = getDocumentStyle();
+  for (var key$1 in documentStyles) {
+    this$1.styleNodes[key$1] = documentStyles[key$1].cloneNode(true);
+    head.appendChild(this$1.styleNodes[key$1]);
+  }
+  head.appendChild(this.styleEl);
+};
+
+function getDocumentStyle () {
+  var links = document.querySelectorAll('link[rel="stylesheet"]');
+  var styles = document.querySelectorAll('style');
+  return Array.from(links).concat(Array.from(styles))
+}
+
 var Preview = {
   name: 'preview',
 
@@ -9406,7 +9477,8 @@ var Preview = {
 
   data: function data () {
     return {
-      resizer: null
+      resizer: null,
+      styler: null
     }
   },
 
@@ -9443,10 +9515,13 @@ var Preview = {
   methods: {
     initIframe: function initIframe () {
       this.resizer = new IframeResizer(this.$el);
+      this.styler = new IframeStyler(this.$el);
       this.renderCode();
+      this.startStyler();
     },
     cleanupIframe: function cleanupIframe () {
       this.stopResizer();
+      this.stopStyler();
     },
     startResizer: function startResizer () {
       if (this.resizer) {
@@ -9456,6 +9531,17 @@ var Preview = {
     stopResizer: function stopResizer () {
       if (this.resizer) {
         this.resizer.stop();
+      }
+    },
+    startStyler: function startStyler () {
+      if (this.styler) {
+        this.styler.start();
+        this.styler.setStyles(this.styles);
+      }
+    },
+    stopStyler: function stopStyler () {
+      if (this.styler) {
+        this.styler.stop();
       }
     },
     renderCode: function renderCode () {
@@ -9480,22 +9566,9 @@ var Preview = {
 
       if (this.iframe) {
         container.classList.add(this.iframeClass);
-        var head = this.$el.contentDocument.head;
-        if (this.styleEl) {
-          head.removeChild(this.styleEl);
-          for (var key in this$1.styleNodes) {
-            head.removeChild(this$1.styleNodes[key]);
-          }
+        if (this.styler) {
+          this.styler.setStyles(this.styles);
         }
-        this.styleEl = document.createElement('style');
-        this.styleEl.appendChild(document.createTextNode(this.styles));
-        this.styleNodes = [];
-        var documentStyles = getDocumentStyle();
-        for (var key$1 in documentStyles) {
-          this$1.styleNodes[key$1] = documentStyles[key$1].cloneNode(true);
-          head.appendChild(this$1.styleNodes[key$1]);
-        }
-        head.appendChild(this.styleEl);
       }
 
       try {
@@ -9503,8 +9576,8 @@ var Preview = {
         this.codeVM = new Vue$1(assign({}, {parent: parent}, val)).$mount(this.codeEl);
 
         if (lastData) {
-          for (var key$2 in lastData) {
-            this$1.codeVM[key$2] = lastData[key$2];
+          for (var key in lastData) {
+            this$1.codeVM[key] = lastData[key];
           }
         }
       } catch (e) {
@@ -9520,12 +9593,6 @@ function insertScope (style, scope) {
   return style.trim().replace(regex, function (m, g1, g2) {
     return g1 ? (g1 + " " + scope + " " + g2) : (scope + " " + g2)
   })
-}
-
-function getDocumentStyle () {
-  var links = document.querySelectorAll('link[rel="stylesheet"]');
-  var styles = document.querySelectorAll('style');
-  return Array.from(links).concat(Array.from(styles))
 }
 
 var parser = function (input) {
