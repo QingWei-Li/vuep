@@ -1,7 +1,7 @@
 import Vue from 'vue/dist/vue.common'
 import assign from '../utils/assign' // eslint-disable-line
 import IframeResizer from '../utils/iframe-resizer'
-import IframeStyler from '../utils/Iframe-styler'
+import IframeStyler from '../utils/iframe-styler'
 
 export default {
   name: 'preview',
