@@ -1,19 +1,21 @@
 import Vue from 'vue'
 import Preview from '../src/components/preview'
+import css from 'css'
 
 const Ctor = Vue.extend(Preview)
 
 test('scoped style', () => {
   const vm = new Ctor({
     propsData: {
-      styles: '.main { color: red } #id { width: 10px } p { height: 20 } .wrapper input { background: url("");}'
+      styles: '.main { color: red } #id { width: 10px } p { height: 20 } .wrapper input { background: url("");} @keyframes load { 0%, 100% {height: 40px;} 50% {height: 70px;} }'
     }
   }).$mount()
   const _uid = vm._uid
   const scoped = '.vuep-scoped-' + _uid
-  const fixture = `${scoped} .main { color: red } ${scoped} #id { width: 10px } ${scoped} p { height: 20 } ${scoped} .wrapper input { background: url("");}`
+  const fixture = `${scoped} .main { color: red } ${scoped} #id { width: 10px } ${scoped} p { height: 20 } ${scoped} .wrapper input { background: url("");} @keyframes load { 0%, 100% {height: 40px;} 50% {height: 70px;} }
+`
 
-  expect(vm.scopedStyle).toEqual(fixture)
+  expect(vm.scopedStyle).toEqual(css.stringify(css.parse(fixture), { compress: true }))
 })
 
 describe('append new vm', () => {
