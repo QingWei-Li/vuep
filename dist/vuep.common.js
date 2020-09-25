@@ -180,7 +180,7 @@ var parser = function (input) {
     }
 
     return {
-      content: /<\/script>$/g.test(content) ? content : (content + '\n</script>'),
+      content: content,
       template: template ? template.innerHTML : '',
       script: script ? script.innerHTML : '',
       styles: styles
@@ -266,6 +266,7 @@ var compiler = function (ref, scope) {
   var styles = ref.styles;
   if ( scope === void 0 ) scope = {};
 
+  script = script.replace(/export +default +{/, 'module.exports={');
   try {
     if (script === 'module.exports={}' && !template) { throw Error('no data') }
     var result = evalJS(script, scope);

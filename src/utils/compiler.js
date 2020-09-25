@@ -1,6 +1,7 @@
 import evalJS from './transform'
 
 export default function ({ template, script = 'module.exports={}', styles }, scope = {}) {
+  script = script.replace(/export +default +{/, 'module.exports={')
   try {
     if (script === 'module.exports={}' && !template) throw Error('no data')
     const result = evalJS(script, scope)

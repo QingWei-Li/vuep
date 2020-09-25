@@ -1,6 +1,6 @@
 {
-  "name": "vuep",
-  "version": "0.8.1",
+  "name": "@smu-heartcode/vuep",
+  "version": "0.8.2",
   "description": "A component for rendering Vue components with live editor and preview.",
   "main": "dist/vuep.common.js",
   "unpkg": "dist/vuep.js",

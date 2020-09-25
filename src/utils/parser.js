@@ -15,7 +15,7 @@ export default function (input) {
     }
 
     return {
-      content: /<\/script>$/g.test(content) ? content : (content + '\n</script>'),
+      content: content,
       template: template ? template.innerHTML : '',
       script: script ? script.innerHTML : '',
       styles: styles
