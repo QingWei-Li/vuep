@@ -12,7 +12,12 @@ export default {
     keepData: Boolean,
     value: String,
     scope: Object,
-    iframe: Boolean
+    iframe: Boolean,
+    fitIframe: Boolean,
+    iframeClass: {
+      type: String,
+      default: 'vuep-iframe-preview'
+    }
   },
 
   data () {
@@ -39,7 +44,9 @@ export default {
           value: this.preview,
           styles: this.styles,
           keepData: this.keepData,
-          iframe: this.iframe
+          iframe: this.iframe,
+          fitIframe: this.fitIframe,
+          iframeClass: this.iframeClass
         },
         on: {
           error: this.handleError
@@ -47,19 +54,31 @@ export default {
       })
     }
 
-    return h('div', { class: 'vuep' }, [
-      h(Editor, {
-        class: 'vuep-editor',
-        props: {
-          value: this.content,
-          options: this.options
+    const editor = h(Editor, {
+      class: 'vuep-editor',
+      props: {
+        value: this.content,
+        options: this.options
+      },
+      on: {
+        change: [this.executeCode, val => this.$emit('input', val)]
+      }
+    })
+
+    let children = [editor, win]
+    if (this.$slots.default) {
+      children = this.addSlots(h, this.$slots.default, [
+        {
+          name: 'vuep-preview',
+          child: win
         },
-        on: {
-          change: [this.executeCode, val => this.$emit('input', val)]
+        {
+          name: 'vuep-editor',
+          child: editor
         }
-      }),
-      win
-    ])
+      ])
+    }
+    return h('div', { class: 'vuep' }, children)
   },
 
   watch: {
@@ -91,6 +110,21 @@ export default {
   },
 
   methods: {
+    addSlots (h, vnodes, slots) {
+      return vnodes.map(vnode => {
+        let children = []
+        slots.forEach(({ name, child }) => {
+          if (vnode.data && vnode.data.attrs && vnode.data.attrs[name] !== undefined) {
+            children = [child]
+          }
+        })
+        if (!children.length && vnode.children && vnode.children.length) {
+          children = this.addSlots(h, vnode.children, slots)
+        }
+        return h(vnode.tag, vnode.data, children)
+      })
+    },
+
     handleError (err) {
       /* istanbul ignore next */
       this.error = err

@@ -1,10 +1,12 @@
 import Vue from 'vue/dist/vue.common'
 import assign from '../utils/assign' // eslint-disable-line
+import IframeResizer from '../utils/iframe-resizer'
+import IframeStyler from '../utils/iframe-styler'
 
 export default {
   name: 'preview',
 
-  props: ['value', 'styles', 'keepData', 'iframe'],
+  props: ['value', 'styles', 'keepData', 'iframe', 'fitIframe', 'iframeClass'],
 
   render (h) {
     this.className = 'vuep-scoped-' + this._uid
@@ -14,6 +16,13 @@ export default {
     }, [
       this.scopedStyle ? h('style', null, this.scopedStyle) : ''
     ])
+  },
+
+  data () {
+    return {
+      resizer: null,
+      styler: null
+    }
   },
 
   computed: {
@@ -27,15 +36,55 @@ export default {
   mounted () {
     this.$watch('value', this.renderCode, { immediate: true })
     if (this.iframe) {
-      this.$el.addEventListener('load', this.renderCode)
+      // Firefox needs the iframe to be loaded
+      if (this.$el.contentDocument.readyState === 'complete') {
+        this.initIframe()
+      } else {
+        this.$el.addEventListener('load', this.initIframe)
+      }
+      this.$watch('fitIframe', (fitIframe) => {
+        fitIframe ? this.startResizer() : this.stopResizer()
+      }, { immediate: true })
     }
   },
   beforeDestroy () {
     if (this.iframe) {
-      this.$el.removeEventListener('load', this.renderCode)
+      this.$el.removeEventListener('load', this.initIframe)
+      this.cleanupIframe()
     }
   },
   methods: {
+    initIframe () {
+      this.resizer = new IframeResizer(this.$el)
+      this.styler = new IframeStyler(this.$el)
+      this.renderCode()
+      this.startStyler()
+    },
+    cleanupIframe () {
+      this.stopResizer()
+      this.stopStyler()
+    },
+    startResizer () {
+      if (this.resizer) {
+        this.resizer.start()
+      }
+    },
+    stopResizer () {
+      if (this.resizer) {
+        this.resizer.stop()
+      }
+    },
+    startStyler () {
+      if (this.styler) {
+        this.styler.start()
+        this.styler.setStyles(this.styles)
+      }
+    },
+    stopStyler () {
+      if (this.styler) {
+        this.styler.stop()
+      }
+    },
     renderCode () {
       // Firefox needs the iframe to be loaded
       if (this.iframe && this.$el.contentDocument.readyState !== 'complete') {
@@ -55,22 +104,10 @@ export default {
       container.appendChild(this.codeEl)
 
       if (this.iframe) {
-        const head = this.$el.contentDocument.head
-        if (this.styleEl) {
-          head.removeChild(this.styleEl)
-          for (const key in this.styleNodes) {
-            head.removeChild(this.styleNodes[key])
-          }
+        container.classList.add(this.iframeClass)
+        if (this.styler) {
+          this.styler.setStyles(this.styles)
         }
-        this.styleEl = document.createElement('style')
-        this.styleEl.appendChild(document.createTextNode(this.styles))
-        this.styleNodes = []
-        const documentStyles = getDocumentStyle()
-        for (const key in documentStyles) {
-          this.styleNodes[key] = documentStyles[key].cloneNode(true)
-          head.appendChild(this.styleNodes[key])
-        }
-        head.appendChild(this.styleEl)
       }
 
       try {
@@ -95,10 +132,4 @@ function insertScope (style, scope) {
   return style.trim().replace(regex, (m, g1, g2) => {
     return g1 ? `${g1} ${scope} ${g2}` : `${scope} ${g2}`
   })
-}
-
-function getDocumentStyle () {
-  const links = document.querySelectorAll('link[rel="stylesheet"]')
-  const styles = document.querySelectorAll('style')
-  return Array.from(links).concat(Array.from(styles))
 }
