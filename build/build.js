@@ -2,6 +2,8 @@ var rollup = require('rollup')
 var buble = require('rollup-plugin-buble')
 var commonjs = require('rollup-plugin-commonjs')
 var nodeResolve = require('rollup-plugin-node-resolve')
+var nodeBuiltins = require('rollup-plugin-node-builtins')
+var nodeGlobals = require('rollup-plugin-node-globals')
 var uglify = require('rollup-plugin-uglify')
 
 var build = function (opts) {
@@ -10,7 +12,7 @@ var build = function (opts) {
       entry: 'src/' + opts.entry,
       plugins: [buble({
         objectAssign: 'assign'
-      }), commonjs(), nodeResolve()].concat(opts.plugins || []),
+      }), commonjs(), nodeResolve(), nodeBuiltins(), nodeGlobals()].concat(opts.plugins || []),
       external: opts.external
     })
     .then(function (bundle) {

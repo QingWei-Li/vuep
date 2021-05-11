@@ -1,5 +1,6 @@
 import Vue from 'vue/dist/vue.common'
 import assign from '../utils/assign' // eslint-disable-line
+import css from 'css'
 
 export default {
   name: 'preview',
@@ -91,10 +92,14 @@ export default {
 }
 
 function insertScope (style, scope) {
-  const regex = /(^|\})\s*([^{]+)/g
-  return style.trim().replace(regex, (m, g1, g2) => {
-    return g1 ? `${g1} ${scope} ${g2}` : `${scope} ${g2}`
-  })
+  const ast = css.parse(style)
+  for (var i = 0, len = ast.stylesheet.rules.length; i < len; i++) {
+    var rule = ast.stylesheet.rules[i]
+    if (rule.selectors && rule.selectors[0]) {
+      rule.selectors[0] = scope + ' ' + rule.selectors[0]
+    }
+  }
+  return css.stringify(ast, { compress: true })
 }
 
 function getDocumentStyle () {

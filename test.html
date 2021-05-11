@@ -39,6 +39,42 @@
   .text {
     color: #4fc08d;
   }
+
+  .animation {
+    width: 10px;
+    height: 10px;
+    background: red;
+    position: relative;
+    animation: animation 2s infinite;
+  }
+
+  @keyframes animation {
+    0% {
+      background: red;
+      left: 0px;
+      top: 0px;
+    }
+    25% {
+      background: yellow;
+      left: 10px;
+      top: 0px;
+    }
+    50% {
+      background: blue;
+      left: 10px;
+      top: 10px;
+    }
+    75% {
+      background: green;
+      left: 0px;
+      top: 10px;
+    }
+    100% {
+      background: red;
+      left: 0px;
+      top: 0px;
+    }
+  }
 </style>
 
 <template>
@@ -48,6 +84,7 @@
     <ul>
       <li v-for="text in features">{{ text }}</li>
     </ul>
+    <div class="animation"></div>
   </div>
 </template>
 
